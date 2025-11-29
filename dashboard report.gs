@@ -1,5 +1,5 @@
 // ============================================================
-// 📊 DASHBOARD REPORT - VERSION 8.0
+// 📊 DASHBOARD REPORT - VERSION 8.1 EXTENDED LAYOUT
 // ✅ Filter ใช้ร่วมกัน (ปี, เดือน, รอบ, นักเรียน, ติวเตอร์)
 // ✅ 2 ปุ่ม: รายงานนักเรียน + รายงานติวเตอร์
 // ✅ Compact Layout (~17 Rows)
@@ -9,6 +9,11 @@
 //    - เพิ่มคอลัมน์ยอดเงิน ในรายงานติวเตอร์
 //    - แก้ไขกรอบยอดรวม (SOLID_MEDIUM → SOLID)
 //    - แก้ไข layout calculation ป้องกันหัวตารางทับ checkbox
+// 🆕 Version 8.1 Changes:
+//    - ขยายทุกส่วนเป็น 14 columns (A-N)
+//    - เพิ่ม checkbox "ทั้งหมด" สำหรับ ปี, รอบ, เดือน
+//    - แก้ไข tutor header ไม่ให้ซ้ำข้อมูล "(X คน)"
+//    - ตารางสรุปติวเตอร์ใช้ layout เหมือน Dashboard Payment
 // ============================================================
 
 // ============================================================
@@ -32,9 +37,9 @@ function setupDashboardReport() {
   }
 
   // ============================================================
-  // ROW 1: HEADER
+  // ROW 1: HEADER (ขยายเป็น 14 columns)
   // ============================================================
-  dashboard.getRange('A1:M1').merge()
+  dashboard.getRange('A1:N1').merge()
     .setValue('📊 Dashboard Report - รายงานการเรียน')
     .setFontSize(16)
     .setFontWeight('bold')
@@ -45,54 +50,52 @@ function setupDashboardReport() {
   dashboard.setRowHeight(1, 45);
 
   // ============================================================
-  // ROW 3: ปี + รอบ + ปุ่มอัพเดต (แถวเดียว)
+  // ROW 3: ปี + รอบ + ปุ่มอัพเดต + เพิ่ม checkbox "ทั้งหมด"
   // ============================================================
   // ปี
   dashboard.getRange('A3').setValue('📅 ปี').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('B3').setValue('2025').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('C3').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('D3').setValue('2026').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('B3').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod);  // Checkbox "ทั้งหมด"
+  dashboard.getRange('C3').setValue('ทั้งหมด').setHorizontalAlignment('center').setFontSize(8).setFontColor('#ea4335').setFontWeight('bold').setBackground(REPORT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('D3').setValue('2025').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
   dashboard.getRange('E3').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('F3').setValue('2026').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('G3').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod);
 
   // รอบ
-  dashboard.getRange('F3').setValue('📅 รอบ').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('G3').setValue('1-15').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('H3').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('I3').setValue('16-31').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('J3').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-
-  // ปุ่มอัพเดต
-  dashboard.getRange('K3:M3').merge()
-    .setValue('🔄 อัพเดต')
-    .setFontSize(10)
-    .setFontWeight('bold')
-    .setHorizontalAlignment('center')
-    .setVerticalAlignment('middle')
-    .setBackground(REPORT_CONFIG.COLORS.buttonUpdate)
-    .setFontColor('#000000');
+  dashboard.getRange('H3').setValue('📅 รอบ').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('I3').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod);  // Checkbox "ทั้งหมด"
+  dashboard.getRange('J3').setValue('ทั้งหมด').setHorizontalAlignment('center').setFontSize(8).setFontColor('#ea4335').setFontWeight('bold').setBackground(REPORT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('K3').setValue('1-15').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('L3').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('M3').setValue('16-31').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('N3').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod);
 
   dashboard.setRowHeight(3, 30);
-  dashboard.getRange('A3:M3').setBorder(true, true, true, true, true, true, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
+  dashboard.getRange('A3:N3').setBorder(true, true, true, true, true, true, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
 
   // ============================================================
-  // ROW 5-6: เดือน (A5 = Label, B5-M5 = 12 เดือน)
+  // ROW 5-7: เดือน + ปุ่มอัพเดต + เพิ่ม checkbox "ทั้งหมด"
   // ============================================================
   // A5: Label "เดือน"
   dashboard.getRange('A5').setValue('เดือน').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.month).setHorizontalAlignment('center');
-  dashboard.getRange('A6').setBackground(REPORT_CONFIG.COLORS.month);
+  dashboard.getRange('A6').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.month);  // Checkbox "ทั้งหมด"
 
-  // Row 5: ชื่อเดือน (B5-M5 = 12 เดือน)
+  // B5: Label "ทั้งหมด"
+  dashboard.getRange('B5').setValue('ทั้งหมด').setHorizontalAlignment('center').setFontSize(8).setFontColor('#ea4335').setFontWeight('bold').setBackground(REPORT_CONFIG.COLORS.month);
+  dashboard.getRange('B6').setBackground(REPORT_CONFIG.COLORS.month);
+
+  // Row 5: ชื่อเดือน (C5-N5 = 12 เดือน)
   SHARED_CONFIG.MONTH_SHORT.forEach((month, index) => {
-    dashboard.getRange(5, index + 2)  // B5-M5
+    dashboard.getRange(5, index + 3)  // C5-N5
       .setValue(month)
       .setHorizontalAlignment('center')
       .setFontSize(8)
       .setBackground(REPORT_CONFIG.COLORS.month);
   });
 
-  // Row 6: Checkbox เดือน (B6-M6 = 12 เดือน)
+  // Row 6: Checkbox เดือน (C6-N6 = 12 เดือน)
   for (let i = 0; i < 12; i++) {
-    dashboard.getRange(6, i + 2)  // B6-M6
+    dashboard.getRange(6, i + 3)  // C6-N6
       .insertCheckboxes()
       .setHorizontalAlignment('center')
       .setBackground(REPORT_CONFIG.COLORS.month);
@@ -100,43 +103,57 @@ function setupDashboardReport() {
 
   dashboard.setRowHeight(5, 22);
   dashboard.setRowHeight(6, 25);
-  dashboard.getRange('A5:M6').setBorder(true, true, true, true, true, true, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
+  dashboard.getRange('A5:N6').setBorder(true, true, true, true, true, true, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
 
   // ============================================================
-  // ROW 8: นักเรียน Header
+  // ROW 7: ปุ่มอัพเดต (ย้ายมาแถว 7)
   // ============================================================
-  dashboard.getRange('A8').setValue('👤 นักเรียน').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.student);
-  dashboard.getRange('B8').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.student);
-  dashboard.getRange('C8').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(REPORT_CONFIG.COLORS.student);
-  dashboard.getRange('D8').setValue('(กด "อัพเดต" เพื่อแสดงรายชื่อ)').setFontSize(8).setFontColor('#999999').setFontStyle('italic').setBackground(REPORT_CONFIG.COLORS.student);
-  // E8:M8 ไว้ให้ dynamic checkbox ใช้
-  dashboard.getRange('E8:M8').setBackground(REPORT_CONFIG.COLORS.student);
-  dashboard.setRowHeight(8, 25);
-
-  // ROW 9-10: Placeholder นักเรียน (Label + Checkbox)
-  dashboard.getRange('A9:M9').setBackground('#fffde7');
-  dashboard.getRange('A10:M10').setBackground('#fffde7');
-  dashboard.setRowHeight(9, 20);
-  dashboard.setRowHeight(10, 22);
-  dashboard.getRange('A8:M10').setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
+  dashboard.getRange('A7:N7').merge()
+    .setValue('🔄 อัพเดต')
+    .setFontSize(10)
+    .setFontWeight('bold')
+    .setHorizontalAlignment('center')
+    .setVerticalAlignment('middle')
+    .setBackground(REPORT_CONFIG.COLORS.buttonUpdate)
+    .setFontColor('#000000');
+  dashboard.setRowHeight(7, 30);
+  dashboard.getRange('A7:N7').setBorder(true, true, true, true, true, true, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
 
   // ============================================================
-  // ROW 12: ติวเตอร์ Header
+  // ROW 9: นักเรียน Header (ย้ายจาก row 8 → row 9)
   // ============================================================
-  dashboard.getRange('A12').setValue('👨‍🏫 ติวเตอร์').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.tutor);
-  dashboard.getRange('B12').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.tutor);
-  dashboard.getRange('C12').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(REPORT_CONFIG.COLORS.tutor);
-  dashboard.getRange('D12').setValue('(กด "อัพเดต" เพื่อแสดงรายชื่อ)').setFontSize(8).setFontColor('#999999').setFontStyle('italic').setBackground(REPORT_CONFIG.COLORS.tutor);
-  // E12:M12 ไว้ให้ dynamic checkbox ใช้
-  dashboard.getRange('E12:M12').setBackground(REPORT_CONFIG.COLORS.tutor);
-  dashboard.setRowHeight(12, 25);
+  dashboard.getRange('A9').setValue('👤 นักเรียน').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.student);
+  dashboard.getRange('B9').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.student);
+  dashboard.getRange('C9').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(REPORT_CONFIG.COLORS.student);
+  dashboard.getRange('D9').setValue('(กด "อัพเดต" เพื่อแสดงรายชื่อ)').setFontSize(8).setFontColor('#999999').setFontStyle('italic').setBackground(REPORT_CONFIG.COLORS.student);
+  // E9:N9 ไว้ให้ dynamic checkbox ใช้
+  dashboard.getRange('E9:N9').setBackground(REPORT_CONFIG.COLORS.student);
+  dashboard.setRowHeight(9, 25);
 
-  // ROW 13-14: Placeholder ติวเตอร์ (Label + Checkbox)
-  dashboard.getRange('A13:M13').setBackground('#e8f5e9');
-  dashboard.getRange('A14:M14').setBackground('#e8f5e9');
-  dashboard.setRowHeight(13, 20);
-  dashboard.setRowHeight(14, 22);
-  dashboard.getRange('A12:M14').setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
+  // ROW 10-11: Placeholder นักเรียน (Label + Checkbox)
+  dashboard.getRange('A10:N10').setBackground('#fffde7');
+  dashboard.getRange('A11:N11').setBackground('#fffde7');
+  dashboard.setRowHeight(10, 20);
+  dashboard.setRowHeight(11, 22);
+  dashboard.getRange('A9:N11').setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
+
+  // ============================================================
+  // ROW 13: ติวเตอร์ Header (ย้ายจาก row 12 → row 13)
+  // ============================================================
+  dashboard.getRange('A13').setValue('👨‍🏫 ติวเตอร์').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.tutor);
+  dashboard.getRange('B13').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.tutor);
+  dashboard.getRange('C13').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(REPORT_CONFIG.COLORS.tutor);
+  dashboard.getRange('D13').setValue('(กด "อัพเดต" เพื่อแสดงรายชื่อ)').setFontSize(8).setFontColor('#999999').setFontStyle('italic').setBackground(REPORT_CONFIG.COLORS.tutor);
+  // E13:N13 ไว้ให้ dynamic checkbox ใช้
+  dashboard.getRange('E13:N13').setBackground(REPORT_CONFIG.COLORS.tutor);
+  dashboard.setRowHeight(13, 25);
+
+  // ROW 14-15: Placeholder ติวเตอร์ (Label + Checkbox)
+  dashboard.getRange('A14:N14').setBackground('#e8f5e9');
+  dashboard.getRange('A15:N15').setBackground('#e8f5e9');
+  dashboard.setRowHeight(14, 20);
+  dashboard.setRowHeight(15, 22);
+  dashboard.getRange('A13:N15').setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
 
   // ============================================================
   // ROW 16+: ปุ่มรายงาน, Summary Cards, Table Header
@@ -145,21 +162,12 @@ function setupDashboardReport() {
   // เพื่อไม่ให้ถูกทับโดย checkbox sections
 
   // ============================================================
-  // COLUMN WIDTHS
+  // COLUMN WIDTHS (ขยายเป็น 14 columns)
   // ============================================================
   dashboard.setColumnWidth(1, 90);   // A
-  dashboard.setColumnWidth(2, 65);   // B
-  dashboard.setColumnWidth(3, 65);   // C
-  dashboard.setColumnWidth(4, 65);   // D
-  dashboard.setColumnWidth(5, 65);   // E
-  dashboard.setColumnWidth(6, 65);   // F
-  dashboard.setColumnWidth(7, 65);   // G
-  dashboard.setColumnWidth(8, 65);   // H
-  dashboard.setColumnWidth(9, 65);   // I
-  dashboard.setColumnWidth(10, 65);  // J
-  dashboard.setColumnWidth(11, 65);  // K
-  dashboard.setColumnWidth(12, 65);  // L
-  dashboard.setColumnWidth(13, 65);  // M
+  for (let i = 2; i <= 14; i++) {
+    dashboard.setColumnWidth(i, 65);  // B-N
+  }
 
   // NOTE: setFrozenRows จะถูกเรียกใน updateReportCheckboxes() แบบ dynamic
 
@@ -263,39 +271,40 @@ function updateReportCheckboxes() {
   Logger.log('👤 Students: ' + students.length);
   Logger.log('👨‍🏫 Tutors: ' + tutors.length);
 
-  // Display Student Checkboxes (Row 9-10, และอาจจะมีแถวเพิ่ม)
-  const studentRowsUsed = displayCheckboxRow(dashboard, students, 9, 10, '#fffde7');
+  // Display Student Checkboxes (Row 10-11, ย้ายจาก 9-10)
+  const studentRowsUsed = displayCheckboxRow(dashboard, students, 10, 11, '#fffde7');
 
   // Calculate tutor start row (หลังจากนักเรียน + 2 แถวว่าง เพื่อไม่ให้ทับกัน)
-  const tutorStartRow = 9 + studentRowsUsed + 2;
+  const tutorStartRow = 10 + studentRowsUsed + 2;
 
   // Setup Tutor Header ใหม่
   dashboard.getRange(tutorStartRow, 1).setValue('👨‍🏫 ติวเตอร์').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.tutor);
   dashboard.getRange(tutorStartRow, 2).insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.tutor);
   dashboard.getRange(tutorStartRow, 3).setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(REPORT_CONFIG.COLORS.tutor);
-  dashboard.getRange(tutorStartRow, 4, 1, 10).setValue('(' + tutors.length + ' คน)').setFontSize(8).setFontColor('#666666').setFontStyle('italic').setBackground(REPORT_CONFIG.COLORS.tutor);
+  dashboard.getRange(tutorStartRow, 4).setValue('(' + tutors.length + ' คน)').setFontSize(8).setFontColor('#666666').setFontStyle('italic').setBackground(REPORT_CONFIG.COLORS.tutor);  // แก้: ไม่ใช้ range 1,10
+  dashboard.getRange(tutorStartRow, 5, 1, 10).setValue('').setBackground(REPORT_CONFIG.COLORS.tutor);  // เคลียร์ E-N
   dashboard.setRowHeight(tutorStartRow, 25);
 
   // Display Tutor Checkboxes
   const tutorRowsUsed = displayCheckboxRow(dashboard, tutors, tutorStartRow + 1, tutorStartRow + 2, '#e8f5e9');
 
-  // Border for tutor section
+  // Border for tutor section (14 columns, changed from 13)
   const tutorEndRow = tutorStartRow + tutorRowsUsed;
-  dashboard.getRange(tutorStartRow, 1, tutorRowsUsed + 1, 13).setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
+  dashboard.getRange(tutorStartRow, 1, tutorRowsUsed + 1, 14).setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
 
   // Debug log เพื่อตรวจสอบ layout
-  Logger.log(`🔍 Layout Check: student section ends at row ${9 + studentRowsUsed - 1}, tutor starts at ${tutorStartRow}, tutor ends at ${tutorEndRow}`);
+  Logger.log(`🔍 Layout Check: student section ends at row ${10 + studentRowsUsed - 1}, tutor starts at ${tutorStartRow}, tutor ends at ${tutorEndRow}`);
 
-  // Update student header (Row 8 ไม่เคลื่อนที่)
-  dashboard.getRange('A8').setValue('👤 นักเรียน').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.student);
-  dashboard.getRange('B8').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.student);
-  dashboard.getRange('C8').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(REPORT_CONFIG.COLORS.student);
-  dashboard.getRange('D8').setValue('(' + students.length + ' คน)').setFontSize(8).setFontColor('#666666').setFontStyle('italic').setBackground(REPORT_CONFIG.COLORS.student);
-  dashboard.getRange('E8:M8').setValue('').setBackground(REPORT_CONFIG.COLORS.student);  // เคลียร์ E8:M8
+  // Update student header (Row 9 ย้ายจาก row 8)
+  dashboard.getRange('A9').setValue('👤 นักเรียน').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.student);
+  dashboard.getRange('B9').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.student);
+  dashboard.getRange('C9').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(REPORT_CONFIG.COLORS.student);
+  dashboard.getRange('D9').setValue('(' + students.length + ' คน)').setFontSize(8).setFontColor('#666666').setFontStyle('italic').setBackground(REPORT_CONFIG.COLORS.student);
+  dashboard.getRange('E9:N9').setValue('').setBackground(REPORT_CONFIG.COLORS.student);  // เคลียร์ E9:N9 (changed from E8:M8)
 
-  // Border for student section
-  const studentEndRow = 9 + studentRowsUsed - 1;
-  dashboard.getRange(8, 1, studentRowsUsed + 1, 13).setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
+  // Border for student section (14 columns, ย้ายจาก row 8 → row 9)
+  const studentEndRow = 10 + studentRowsUsed - 1;
+  dashboard.getRange(9, 1, studentRowsUsed + 1, 14).setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
 
   // ============================================================
   // DYNAMIC LAYOUT: ลบปุ่มรายงานและ Summary Cards (ไม่ใช้แล้ว)
@@ -305,7 +314,7 @@ function updateReportCheckboxes() {
   // Clear old dynamic sections (ล้างแถว dataStartRow เป็นต้นไป)
   const maxClearRow = 50;
   if (dataStartRow < maxClearRow) {
-    dashboard.getRange(dataStartRow, 1, maxClearRow - dataStartRow + 1, 13).clearContent().clearFormat();
+    dashboard.getRange(dataStartRow, 1, maxClearRow - dataStartRow + 1, 14).clearContent().clearFormat();
   }
 
   // Update frozen rows
@@ -322,20 +331,20 @@ function updateReportCheckboxes() {
 
 // ============================================================
 // 📊 DISPLAY CHECKBOX ROW (Label Row + Checkbox Row)
-// รองรับ 13 คน/แถว (A-M), ถ้ามากกว่า 13 ให้เพิ่มอีก 2 แถว
+// รองรับ 14 คน/แถว (A-N), ถ้ามากกว่า 14 ให้เพิ่มอีก 2 แถว
 // Return: จำนวนแถวที่ใช้ (label + checkbox rows)
 // ============================================================
 function displayCheckboxRow(dashboard, items, labelRow, checkboxRow, bgColor) {
-  const maxPerRow = 13;  // A-M = 13 คอลัม
-  const maxRows = 3;     // รองรับสูงสุด 3 แถว (13+13+13 = 39 คน)
+  const maxPerRow = 14;  // A-N = 14 คอลัม (changed from 13)
+  const maxRows = 3;     // รองรับสูงสุด 3 แถว (14+14+14 = 42 คน)
 
   // Calculate rows needed
   const rowsNeeded = Math.min(Math.ceil(items.length / maxPerRow), maxRows);
 
   // Clear old data (clear up to 6 rows: 3 label rows + 3 checkbox rows)
   for (let r = 0; r < maxRows * 2; r++) {
-    dashboard.getRange(labelRow + r, 1, 1, 13).clearContent().clearDataValidations();
-    dashboard.getRange(labelRow + r, 1, 1, 13).setBackground(bgColor);
+    dashboard.getRange(labelRow + r, 1, 1, 14).clearContent().clearDataValidations();
+    dashboard.getRange(labelRow + r, 1, 1, 14).setBackground(bgColor);
   }
 
   if (items.length === 0) return 2;  // Return minimum rows (label + checkbox)
@@ -379,13 +388,18 @@ function displayCheckboxRow(dashboard, items, labelRow, checkboxRow, bgColor) {
 function getSelectedYearsReport(dashboard) {
   const years = [];
 
-  // 2025: C3
-  if (dashboard.getRange('C3').getValue() === true) {
+  // Check "ทั้งหมด" checkbox at B3
+  if (dashboard.getRange('B3').getValue() === true) {
+    return [2025, 2026];  // Return all years
+  }
+
+  // 2025: E3 (moved from C3)
+  if (dashboard.getRange('E3').getValue() === true) {
     years.push(2025);
   }
 
-  // 2026: E3
-  if (dashboard.getRange('E3').getValue() === true) {
+  // 2026: G3 (moved from E3)
+  if (dashboard.getRange('G3').getValue() === true) {
     years.push(2026);
   }
 
@@ -398,9 +412,14 @@ function getSelectedYearsReport(dashboard) {
 function getSelectedMonthsReport(dashboard) {
   const months = [];
 
-  // B6-M6 = เดือน 0-11
+  // Check "ทั้งหมด" checkbox at A6
+  if (dashboard.getRange('A6').getValue() === true) {
+    return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];  // Return all months
+  }
+
+  // C6-N6 = เดือน 0-11 (moved from B6-M6)
   for (let i = 0; i < 12; i++) {
-    if (dashboard.getRange(6, i + 2).getValue() === true) {
+    if (dashboard.getRange(6, i + 3).getValue() === true) {
       months.push(i); // 0-11
     }
   }
@@ -414,13 +433,18 @@ function getSelectedMonthsReport(dashboard) {
 function getSelectedPeriodsReport(dashboard) {
   const periods = [];
 
-  // 1-15: H3
-  if (dashboard.getRange('H3').getValue() === true) {
+  // Check "ทั้งหมด" checkbox at I3
+  if (dashboard.getRange('I3').getValue() === true) {
+    return ['1-15', '16-31'];  // Return all periods
+  }
+
+  // 1-15: L3 (moved from H3)
+  if (dashboard.getRange('L3').getValue() === true) {
     periods.push('1-15');
   }
 
-  // 16-31: J3
-  if (dashboard.getRange('J3').getValue() === true) {
+  // 16-31: N3 (moved from J3)
+  if (dashboard.getRange('N3').getValue() === true) {
     periods.push('16-31');
   }
 
@@ -431,22 +455,22 @@ function getSelectedPeriodsReport(dashboard) {
 // 👤 GET SELECTED STUDENTS
 // ============================================================
 function getSelectedStudentsReport(dashboard) {
-  // Check "ทั้งหมด"
-  if (dashboard.getRange('B8').getValue() === true) {
+  // Check "ทั้งหมด" at B9 (moved from B8)
+  if (dashboard.getRange('B9').getValue() === true) {
     return [];
   }
 
   const selected = [];
-  const maxRows = 3;  // รองรับ 3 แถว (Row 9-10, 11-12, 13-14)
+  const maxRows = 3;  // รองรับ 3 แถว (Row 10-11, 12-13, 14-15)
 
   for (let rowGroup = 0; rowGroup < maxRows; rowGroup++) {
-    const labelRow = 9 + (rowGroup * 2);
+    const labelRow = 10 + (rowGroup * 2);  // Changed from 9 to 10
     const checkRow = labelRow + 1;
 
-    const labels = dashboard.getRange(labelRow, 1, 1, 13).getValues()[0];  // A-M
-    const checks = dashboard.getRange(checkRow, 1, 1, 13).getValues()[0];
+    const labels = dashboard.getRange(labelRow, 1, 1, 14).getValues()[0];  // A-N (changed from 13 to 14)
+    const checks = dashboard.getRange(checkRow, 1, 1, 14).getValues()[0];
 
-    for (let i = 0; i < 13; i++) {
+    for (let i = 0; i < 14; i++) {  // Changed from 13 to 14
       if (checks[i] === true && labels[i]) {
         selected.push(String(labels[i]));
       }
@@ -482,8 +506,8 @@ function loadTutorDisplayToLineIdMappingReport(dashboard) {
 // ============================================================
 function getSelectedTutorsReport(dashboard) {
   // Find tutor header row (ที่มี "👨‍🏫 ติวเตอร์")
-  let tutorHeaderRow = 12;  // Default
-  for (let row = 8; row <= 30; row++) {
+  let tutorHeaderRow = 13;  // Default (changed from 12 → 13)
+  for (let row = 9; row <= 30; row++) {  // Changed from 8 to 9
     const value = dashboard.getRange(row, 1).getValue();
     if (String(value).includes('ติวเตอร์')) {
       tutorHeaderRow = row;
@@ -506,10 +530,10 @@ function getSelectedTutorsReport(dashboard) {
     const labelRow = tutorHeaderRow + 1 + (rowGroup * 2);
     const checkRow = labelRow + 1;
 
-    const labels = dashboard.getRange(labelRow, 1, 1, 13).getValues()[0];  // A-M
-    const checks = dashboard.getRange(checkRow, 1, 1, 13).getValues()[0];
+    const labels = dashboard.getRange(labelRow, 1, 1, 14).getValues()[0];  // A-N (changed from 13 to 14)
+    const checks = dashboard.getRange(checkRow, 1, 1, 14).getValues()[0];
 
-    for (let i = 0; i < 13; i++) {
+    for (let i = 0; i < 14; i++) {  // Changed from 13 to 14
       if (checks[i] === true && labels[i]) {
         const displayName = String(labels[i]);
         const lineId = displayToLineId[displayName];
@@ -988,7 +1012,7 @@ function displayStudentReport(dashboard, studentMap) {
     // Student Header (แบบใหม่)
     const headerText = `👤 ${student} | ${periodText} | ${periodShort} | คอร์ส: ${data.completedCourses}/${data.totalCourses} | 📚 ชม.รวม: ${data.totalHours} | ✅ ใช้ไป: ${data.usedHours.toFixed(1)} | ⏳ คงเหลือ: ${data.remainingHours.toFixed(1)}`;
 
-    dashboard.getRange(currentRow, 1, 1, 13).merge()
+    dashboard.getRange(currentRow, 1, 1, 14).merge()
       .setValue(headerText)
       .setFontSize(10)
       .setFontWeight('bold')
@@ -997,10 +1021,10 @@ function displayStudentReport(dashboard, studentMap) {
     dashboard.setRowHeight(currentRow, 28);
     currentRow++;
 
-    // Table Headers
-    const headers = ['วันที่', 'เวลา', 'ติวเตอร์', 'ชม.', 'คงเหลือ', 'Book', 'Topic', '', '', '', '', '', 'Status'];
+    // Table Headers (14 columns: A-N)
+    const headers = ['วันที่', 'เวลา', 'ติวเตอร์', 'ชม.', 'คงเหลือ', 'Book', 'Topic', '', '', '', '', '', '', 'Status'];
 
-    dashboard.getRange(currentRow, 1, 1, 13)
+    dashboard.getRange(currentRow, 1, 1, 14)
       .setValues([headers])
       .setFontWeight('bold')
       .setFontSize(8)
@@ -1008,8 +1032,8 @@ function displayStudentReport(dashboard, studentMap) {
       .setBackground(REPORT_CONFIG.COLORS.tableHeader)
       .setFontColor('#ffffff');
 
-    // Merge H-L for "Feedback"
-    dashboard.getRange(currentRow, 8, 1, 5).merge()
+    // Merge H-M for "Feedback" (6 columns, expanded from 5)
+    dashboard.getRange(currentRow, 8, 1, 6).merge()
       .setValue('Feedback')
       .setFontWeight('bold')
       .setFontSize(8)
@@ -1032,14 +1056,14 @@ function displayStudentReport(dashboard, studentMap) {
         session.remaining,
         session.book || '',
         session.topic || '',
-        '', '', '', '', '',  // H-L for Feedback (will merge)
-        session.status       // M: Status
+        '', '', '', '', '', '',  // H-M for Feedback (will merge, 6 columns)
+        session.status           // N: Status
       ];
 
-      dashboard.getRange(currentRow, 1, 1, 13).setValues([rowData]);
+      dashboard.getRange(currentRow, 1, 1, 14).setValues([rowData]);
 
-      // Merge H-L for Feedback
-      dashboard.getRange(currentRow, 8, 1, 5).merge()
+      // Merge H-M for Feedback (6 columns, expanded from 5)
+      dashboard.getRange(currentRow, 8, 1, 6).merge()
         .setValue(session.feedback || '')
         .setFontSize(7)
         .setWrap(true)
@@ -1048,13 +1072,13 @@ function displayStudentReport(dashboard, studentMap) {
 
       dashboard.getRange(currentRow, 4).setNumberFormat('#,##0.0');
       dashboard.getRange(currentRow, 5).setNumberFormat('#,##0.0');
-      dashboard.getRange(currentRow, 1, 1, 13).setFontSize(8);
+      dashboard.getRange(currentRow, 1, 1, 14).setFontSize(8);
 
-      // Conditional Formatting for Status (Column M)
+      // Conditional Formatting for Status (Column N)
       if (session.status === '✅') {
-        dashboard.getRange(currentRow, 13).setBackground(REPORT_CONFIG.COLORS.statusOK);
+        dashboard.getRange(currentRow, 14).setBackground(REPORT_CONFIG.COLORS.statusOK);
       } else {
-        dashboard.getRange(currentRow, 13).setBackground(REPORT_CONFIG.COLORS.statusPending);
+        dashboard.getRange(currentRow, 14).setBackground(REPORT_CONFIG.COLORS.statusPending);
       }
 
       currentRow++;
@@ -1078,11 +1102,11 @@ function displayTutorReport(dashboard, tutorMap) {
   );
 
   // ============================================================
-  // 📊 SUMMARY TABLE - ตารางสรุปยอดชำระเงินติวเตอร์
+  // 📊 SUMMARY TABLE - ตารางสรุปยอดชำระเงินติวเตอร์ (Version 8.1: 14 columns layout)
   // ============================================================
 
   // Summary Table Title
-  dashboard.getRange(currentRow, 1, 1, 13).merge()
+  dashboard.getRange(currentRow, 1, 1, 14).merge()
     .setValue('💰 ตารางสรุปยอดชำระเงินติวเตอร์')
     .setFontSize(12)
     .setFontWeight('bold')
@@ -1093,9 +1117,12 @@ function displayTutorReport(dashboard, tutorMap) {
   dashboard.setRowHeight(currentRow, 35);
   currentRow++;
 
-  // Summary Table Headers
-  const summaryHeaders = ['#', 'รอบวันที่', 'Display Name', 'ชื่อจริง', 'ชม.รวม', 'ยอดเงิน (บาท)', '', '', '', '', '', '', ''];
-  dashboard.getRange(currentRow, 1, 1, 13)
+  // Summary Table Headers (14 columns: A-N, same as Dashboard Payment)
+  const summaryHeaders = [
+    '#', 'รอบวันที่', 'รอบ', 'Display Name', '', 'ชื่อจริง', '', 'CourseType', 'รายละเอียด', '', '', '', 'ชม.รวม', 'ยอดเงิน'
+  ];
+
+  dashboard.getRange(currentRow, 1, 1, 14)
     .setValues([summaryHeaders])
     .setFontWeight('bold')
     .setFontSize(9)
@@ -1103,9 +1130,27 @@ function displayTutorReport(dashboard, tutorMap) {
     .setBackground('#4285f4')
     .setFontColor('#ffffff');
 
-  // Merge F-M for "ยอดเงิน (บาท)"
-  dashboard.getRange(currentRow, 6, 1, 8).merge()
-    .setValue('ยอดเงิน (บาท)')
+  // Merge D-E: Display Name
+  dashboard.getRange(currentRow, 4, 1, 2).merge()
+    .setValue('Display Name')
+    .setFontWeight('bold')
+    .setFontSize(9)
+    .setHorizontalAlignment('center')
+    .setBackground('#4285f4')
+    .setFontColor('#ffffff');
+
+  // Merge F-G: ชื่อจริง
+  dashboard.getRange(currentRow, 6, 1, 2).merge()
+    .setValue('ชื่อจริง')
+    .setFontWeight('bold')
+    .setFontSize(9)
+    .setHorizontalAlignment('center')
+    .setBackground('#4285f4')
+    .setFontColor('#ffffff');
+
+  // Merge I-L: รายละเอียด (4 columns)
+  dashboard.getRange(currentRow, 9, 1, 4).merge()
+    .setValue('รายละเอียด')
     .setFontWeight('bold')
     .setFontSize(9)
     .setHorizontalAlignment('center')
@@ -1124,82 +1169,242 @@ function displayTutorReport(dashboard, tutorMap) {
 
   // Format period string
   let periodText = '';
+  let periodShort = '';
   if (selectedYears.length > 0 && selectedMonths.length > 0) {
     const monthNames = selectedMonths.map(m => SHARED_CONFIG.MONTH_SHORT[m]).join(', ');
     const yearText = selectedYears.join(', ');
     periodText = `${monthNames} ${yearText}`;
-    if (selectedPeriods.length > 0 && selectedPeriods.length < 2) {
-      periodText += ` (${selectedPeriods[0] === 1 ? '1-15' : '16-31'})`;
-    }
   }
 
-  // Summary Table Rows
+  // Format period range (1-15, 16-31, or 1-31)
+  if (selectedPeriods.length === 0) {
+    periodShort = '1-31';
+  } else if (selectedPeriods.length === 2) {
+    periodShort = '1-31';
+  } else {
+    periodShort = selectedPeriods[0] || '1-31';
+  }
+
+  // Summary Table Rows - จัดกลุ่มตาม courseType เหมือน Dashboard Payment
+  let totalHoursOverall = 0;
+  let totalAmountOverall = 0;
+
   sortedTutors.forEach((tutor, index) => {
     const data = tutorMap.get(tutor);
 
-    const summaryRowData = [
-      index + 1,                          // #
-      periodText,                         // รอบวันที่
-      data.displayName,                   // Display Name
-      data.fullName,                      // ชื่อจริง
-      data.totalDuration.toFixed(1),      // ชม.รวม
-      '', '', '', '', '', '', '', ''      // F-M for ยอดเงิน (will merge)
+    // จัดกลุ่ม sessions ตาม courseType
+    const courseTypeGroups = new Map();
+
+    data.sessions.forEach(session => {
+      const courseType = session.courseType || 'online1by1';
+
+      if (!courseTypeGroups.has(courseType)) {
+        courseTypeGroups.set(courseType, {
+          sessions: [],
+          totalHours: 0,
+          totalAmount: 0,
+          students: new Set()
+        });
+      }
+
+      const group = courseTypeGroups.get(courseType);
+      group.sessions.push(session);
+      group.totalHours += session.duration;
+      group.totalAmount += session.amount;
+      group.students.add(session.student);
+    });
+
+    // สร้างข้อความสรุปรายละเอียดสำหรับแต่ละ courseType
+    courseTypeGroups.forEach((group, courseType) => {
+      const students = Array.from(group.students);
+      const summaryText = students
+        .map(s => {
+          const studentSessions = group.sessions.filter(sess => sess.student === s);
+          const totalHrs = studentSessions.reduce((sum, sess) => sum + sess.duration, 0);
+          const totalAmt = studentSessions.reduce((sum, sess) => sum + sess.amount, 0);
+          const isPaid = studentSessions.some(sess => sess.shouldPay);
+
+          if (isPaid) {
+            return `${s} ${totalHrs.toFixed(1)}ชม.=${totalAmt.toLocaleString()}฿`;
+          } else {
+            return `${s} ${totalHrs.toFixed(1)}ชม. (รอจบคอร์ส)`;
+          }
+        })
+        .join(', ');
+
+      group.summaryText = summaryText;
+    });
+
+    // แสดงแต่ละ courseType เป็นแถวแยก
+    courseTypeGroups.forEach((group, courseType) => {
+      const summaryRowData = [
+        '', '', '',                      // A-C: จะ merge ภายหลัง
+        '', '',                          // D-E: จะ merge ภายหลัง
+        '', '',                          // F-G: จะ merge ภายหลัง
+        courseType || '',                // H: Course Type
+        '', '', '', '',                  // I-L: รายละเอียด (will merge, 4 columns)
+        group.totalHours || 0,           // M: ชม.รวม
+        group.totalAmount || 0           // N: ยอดเงิน
+      ];
+
+      dashboard.getRange(currentRow, 1, 1, 14).setValues([summaryRowData]);
+
+      // H: Course Type
+      dashboard.getRange(currentRow, 8)
+        .setHorizontalAlignment('center')
+        .setFontSize(8)
+        .setFontWeight('bold');
+
+      // I-L: รายละเอียด (merge 4 columns)
+      dashboard.getRange(currentRow, 9, 1, 4).merge()
+        .setValue(group.summaryText)
+        .setHorizontalAlignment('left')
+        .setFontSize(7)
+        .setWrap(true)
+        .setVerticalAlignment('top');
+
+      // M: ชม.รวม
+      dashboard.getRange(currentRow, 13)
+        .setHorizontalAlignment('center')
+        .setFontSize(8)
+        .setNumberFormat('#,##0.0');
+
+      // N: ยอดเงิน
+      dashboard.getRange(currentRow, 14)
+        .setNumberFormat('#,##0')
+        .setFontSize(8)
+        .setHorizontalAlignment('center');
+
+      // Border
+      dashboard.getRange(currentRow, 1, 1, 14).setBorder(
+        true, true, true, true, true, true,
+        '#cccccc',
+        SpreadsheetApp.BorderStyle.SOLID
+      );
+
+      dashboard.setRowHeight(currentRow, 24);
+      currentRow++;
+    });
+
+    // แถวรวมสำหรับติวเตอร์คนนี้
+    const totalDuration = data.totalDuration || 0;
+    const totalAmount = data.totalAmount || 0;
+
+    totalHoursOverall += totalDuration;
+    totalAmountOverall += totalAmount;
+
+    const tutorTotalData = [
+      index + 1,                         // A: #
+      periodText || '',                  // B: รอบวันที่
+      periodShort || '',                 // C: รอบ
+      '', '',                            // D-E: Display Name (will merge)
+      '', '',                            // F-G: ชื่อจริง (will merge)
+      '**รวม**',                         // H: รวม
+      '', '', '', '',                    // I-L: empty
+      totalDuration || 0,                // M: ชม.รวม
+      totalAmount || 0                   // N: ยอดเงิน
     ];
 
-    dashboard.getRange(currentRow, 1, 1, 13).setValues([summaryRowData]);
+    dashboard.getRange(currentRow, 1, 1, 14).setValues([tutorTotalData]);
 
-    // Format columns
-    dashboard.getRange(currentRow, 1).setHorizontalAlignment('center').setFontSize(8);      // #
-    dashboard.getRange(currentRow, 2).setHorizontalAlignment('center').setFontSize(8);      // รอบวันที่
-    dashboard.getRange(currentRow, 3).setHorizontalAlignment('left').setFontSize(8);        // Display Name
-    dashboard.getRange(currentRow, 4).setHorizontalAlignment('left').setFontSize(8);        // ชื่อจริง
-    dashboard.getRange(currentRow, 5).setHorizontalAlignment('center').setFontSize(8).setNumberFormat('#,##0.0');  // ชม.รวม
+    // A: #
+    dashboard.getRange(currentRow, 1)
+      .setHorizontalAlignment('center')
+      .setFontSize(8);
 
-    // Merge F-M for ยอดเงิน
-    dashboard.getRange(currentRow, 6, 1, 8).merge()
-      .setValue(data.totalAmount)
-      .setNumberFormat('#,##0')
+    // B: รอบวันที่
+    dashboard.getRange(currentRow, 2)
+      .setHorizontalAlignment('center')
+      .setFontSize(8);
+
+    // C: รอบ
+    dashboard.getRange(currentRow, 3)
+      .setHorizontalAlignment('center')
+      .setFontSize(8);
+
+    // D-E: Display Name (merge)
+    dashboard.getRange(currentRow, 4, 1, 2).merge()
+      .setValue(data.displayName)
+      .setHorizontalAlignment('left')
+      .setFontSize(8);
+
+    // F-G: ชื่อจริง (merge)
+    dashboard.getRange(currentRow, 6, 1, 2).merge()
+      .setValue(data.fullName)
+      .setHorizontalAlignment('left')
+      .setFontSize(8);
+
+    // H: รวม (bold)
+    dashboard.getRange(currentRow, 8)
+      .setHorizontalAlignment('right')
       .setFontSize(9)
+      .setFontWeight('bold');
+
+    // M: ชม.รวม (bold)
+    dashboard.getRange(currentRow, 13)
+      .setHorizontalAlignment('center')
+      .setFontSize(9)
+      .setFontWeight('bold')
+      .setNumberFormat('#,##0.0');
+
+    // N: ยอดเงิน (bold)
+    dashboard.getRange(currentRow, 14)
+      .setNumberFormat('#,##0')
+      .setFontSize(10)
       .setFontWeight('bold')
       .setHorizontalAlignment('center');
 
-    // Alternating row colors
-    const bgColor = index % 2 === 0 ? '#e8f0fe' : '#ffffff';
-    dashboard.getRange(currentRow, 1, 1, 13).setBackground(bgColor);
+    // Background สีเหลือง
+    dashboard.getRange(currentRow, 1, 1, 14).setBackground('#fef7e0');
 
     // Border
-    dashboard.getRange(currentRow, 1, 1, 13).setBorder(
+    dashboard.getRange(currentRow, 1, 1, 14).setBorder(
       true, true, true, true, true, true,
       '#cccccc',
-      SpreadsheetApp.BorderStyle.SOLID
+      SpreadsheetApp.BorderStyle.SOLID_MEDIUM
     );
 
-    dashboard.setRowHeight(currentRow, 24);
+    dashboard.setRowHeight(currentRow, 26);
     currentRow++;
   });
 
-  // Total Row
-  const totalHours = Array.from(tutorMap.values()).reduce((sum, data) => sum + data.totalDuration, 0);
-  const totalAmount = Array.from(tutorMap.values()).reduce((sum, data) => sum + data.totalAmount, 0);
-
-  const totalRowData = [
-    '', '', '', 'รวมทั้งหมด', totalHours.toFixed(1), '', '', '', '', '', '', '', ''
+  // Overall Total Row
+  const overallTotalData = [
+    '', '', '',                        // A-C: Empty
+    '', '',                            // D-E: Empty (will merge)
+    '', '',                            // F-G: Empty
+    '', '', '', '', '',                // H-L: รวมทั้งหมด (will merge, 5 columns)
+    totalHoursOverall || 0,            // M: ชม.รวม
+    totalAmountOverall || 0            // N: ยอดเงิน
   ];
 
-  dashboard.getRange(currentRow, 1, 1, 13).setValues([totalRowData]);
-  dashboard.getRange(currentRow, 4).setHorizontalAlignment('right').setFontWeight('bold').setFontSize(9);
-  dashboard.getRange(currentRow, 5).setHorizontalAlignment('center').setFontWeight('bold').setFontSize(9).setNumberFormat('#,##0.0');
+  dashboard.getRange(currentRow, 1, 1, 14).setValues([overallTotalData]);
 
-  dashboard.getRange(currentRow, 6, 1, 8).merge()
-    .setValue(totalAmount)
+  // H-L: รวมทั้งหมด (merge 5 columns)
+  dashboard.getRange(currentRow, 8, 1, 5).merge()
+    .setValue('รวมทั้งหมด')
+    .setHorizontalAlignment('right')
+    .setFontWeight('bold')
+    .setFontSize(9);
+
+  // M: ชม.รวม
+  dashboard.getRange(currentRow, 13)
+    .setHorizontalAlignment('center')
+    .setFontWeight('bold')
+    .setFontSize(9)
+    .setNumberFormat('#,##0.0');
+
+  // N: ยอดเงิน
+  dashboard.getRange(currentRow, 14)
+    .setValue(totalAmountOverall)
     .setNumberFormat('#,##0')
     .setFontSize(10)
     .setFontWeight('bold')
     .setHorizontalAlignment('center');
 
-  dashboard.getRange(currentRow, 1, 1, 13)
+  dashboard.getRange(currentRow, 1, 1, 14)
     .setBackground('#fef7e0')
-    .setBorder(true, true, true, true, true, true, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
+    .setBorder(true, true, true, true, true, true, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 
   dashboard.setRowHeight(currentRow, 28);
   currentRow += 2;  // เว้น 1 แถว
@@ -1209,7 +1414,7 @@ function displayTutorReport(dashboard, tutorMap) {
   // ============================================================
 
   // Details Section Title
-  dashboard.getRange(currentRow, 1, 1, 13).merge()
+  dashboard.getRange(currentRow, 1, 1, 14).merge()
     .setValue('📋 รายละเอียดการสอนแต่ละติวเตอร์')
     .setFontSize(11)
     .setFontWeight('bold')
@@ -1226,7 +1431,7 @@ function displayTutorReport(dashboard, tutorMap) {
     // Tutor Header
     const headerText = `👨‍🏫 ${data.displayName} (${data.fullName}) | 📚 ชม.รวม: ${data.totalDuration.toFixed(1)} | 💰 ยอดเงิน: ${data.totalAmount.toLocaleString()} บาท`;
 
-    dashboard.getRange(currentRow, 1, 1, 13).merge()
+    dashboard.getRange(currentRow, 1, 1, 14).merge()
       .setValue(headerText)
       .setFontSize(10)
       .setFontWeight('bold')
@@ -1235,10 +1440,10 @@ function displayTutorReport(dashboard, tutorMap) {
     dashboard.setRowHeight(currentRow, 28);
     currentRow++;
 
-    // Table Headers (Version 8.0: เพิ่มคอลัมน์ยอดเงิน)
-    const headers = ['วันที่', 'เวลา', 'นักเรียน', 'วิชา', 'CourseType', 'ชม.', '', '', 'Status', '', '', ''];
+    // Table Headers (Version 8.1: 14 columns)
+    const headers = ['วันที่', 'เวลา', 'นักเรียน', 'วิชา', 'CourseType', 'ชม.', '', '', 'Status', '', '', '', '', ''];
 
-    dashboard.getRange(currentRow, 1, 1, 13)
+    dashboard.getRange(currentRow, 1, 1, 14)
       .setValues([headers])
       .setFontWeight('bold')
       .setFontSize(8)
@@ -1255,8 +1460,8 @@ function displayTutorReport(dashboard, tutorMap) {
       .setBackground(REPORT_CONFIG.COLORS.tableHeader)
       .setFontColor('#ffffff');
 
-    // Merge J-M for "หมายเหตุ"
-    dashboard.getRange(currentRow, 10, 1, 4).merge()
+    // Merge J-N for "หมายเหตุ" (5 columns, expanded from 4)
+    dashboard.getRange(currentRow, 10, 1, 5).merge()
       .setValue('หมายเหตุ')
       .setFontWeight('bold')
       .setFontSize(8)
@@ -1267,7 +1472,7 @@ function displayTutorReport(dashboard, tutorMap) {
     dashboard.setRowHeight(currentRow, 22);
     currentRow++;
 
-    // Sessions (Version 8.0: เพิ่มวิชา และยอดเงิน)
+    // Sessions (Version 8.1: 14 columns)
     data.sessions.forEach(session => {
       const dateStr = formatDateString(session.date);
 
@@ -1280,10 +1485,10 @@ function displayTutorReport(dashboard, tutorMap) {
         session.duration,           // F: ชม.
         '', '',                     // G-H: ยอดเงิน (will merge)
         session.status,             // I: Status
-        '', '', '', ''              // J-M: หมายเหตุ (will merge)
+        '', '', '', '', ''          // J-N: หมายเหตุ (will merge, 5 columns)
       ];
 
-      dashboard.getRange(currentRow, 1, 1, 13).setValues([rowData]);
+      dashboard.getRange(currentRow, 1, 1, 14).setValues([rowData]);
 
       // Merge G-H for ยอดเงิน
       dashboard.getRange(currentRow, 7, 1, 2).merge()
@@ -1292,14 +1497,14 @@ function displayTutorReport(dashboard, tutorMap) {
         .setFontSize(8)
         .setHorizontalAlignment('center');
 
-      // Merge J-M for หมายเหตุ (ว่างไว้ให้กรอก)
-      dashboard.getRange(currentRow, 10, 1, 4).merge()
+      // Merge J-N for หมายเหตุ (5 columns, ว่างไว้ให้กรอก)
+      dashboard.getRange(currentRow, 10, 1, 5).merge()
         .setValue('')
         .setFontSize(8)
         .setHorizontalAlignment('left');
 
       dashboard.getRange(currentRow, 6).setNumberFormat('#,##0.0');  // ชม.
-      dashboard.getRange(currentRow, 1, 1, 13).setFontSize(8);
+      dashboard.getRange(currentRow, 1, 1, 14).setFontSize(8);
 
       // Conditional Formatting for Status (Column I)
       if (session.status === '✅') {
