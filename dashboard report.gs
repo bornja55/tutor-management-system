@@ -1,5 +1,5 @@
 // ============================================================
-// 📊 DASHBOARD REPORT - VERSION 8.1 EXTENDED LAYOUT
+// 📊 DASHBOARD REPORT - VERSION 8.3
 // ✅ Filter ใช้ร่วมกัน (ปี, เดือน, รอบ, นักเรียน, ติวเตอร์)
 // ✅ 2 ปุ่ม: รายงานนักเรียน + รายงานติวเตอร์
 // ✅ Compact Layout (~17 Rows)
@@ -14,6 +14,13 @@
 //    - เพิ่ม checkbox "ทั้งหมด" สำหรับ ปี, รอบ, เดือน
 //    - แก้ไข tutor header ไม่ให้ซ้ำข้อมูล "(X คน)"
 //    - ตารางสรุปติวเตอร์ใช้ layout เหมือน Dashboard Payment
+// 🆕 Version 8.2 Changes:
+//    - Compact layout: ลบ rows ที่ไม่จำเป็น
+//    - แก้ไข payment calculation ให้ถูกต้อง (overlapping + onsiteDay per day)
+//    - แก้ไข layout calculation + merge cells ในตารางสรุป
+// 🆕 Version 8.3 Changes:
+//    - ย้าย tutor mapping จาก Z1 → AA1
+//    - ตั้งค่าสีฟอนต์เป็นสีขาวเพื่อซ่อนข้อมูล mapping (ไม่ให้ติดมาตอนปริ้น)
 // ============================================================
 
 // ============================================================
@@ -472,11 +479,14 @@ function saveTutorDisplayToLineIdMappingReport(dashboard, tutorLineIdMap) {
   tutorLineIdMap.forEach((info, lineId) => {
     mapping[info.displayName] = lineId;
   });
-  dashboard.getRange('Z1').setValue(JSON.stringify(mapping));
+  // เก็บใน cell ที่ซ่อน (AA1) และตั้งค่าสีฟอนต์เป็นสีขาว
+  dashboard.getRange('AA1')
+    .setValue(JSON.stringify(mapping))
+    .setFontColor('#ffffff');
 }
 
 function loadTutorDisplayToLineIdMappingReport(dashboard) {
-  const jsonString = dashboard.getRange('Z1').getValue();
+  const jsonString = dashboard.getRange('AA1').getValue();
   if (!jsonString) return {};
   try {
     return JSON.parse(jsonString);

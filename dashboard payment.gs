@@ -1,5 +1,5 @@
 // ============================================================
-// 💰 DASHBOARD PAYMENT - VERSION 7.3 EXTENDED LAYOUT
+// 💰 DASHBOARD PAYMENT - VERSION 7.4
 // ✅ Layout แนวนอนแบบ Compact (เหมือน Dashboard Report)
 // ✅ ปี + เดือน + รอบ แนวนอน
 // ✅ ติวเตอร์ Compact (14 คนต่อแถว) - ขยายจาก 13
@@ -12,6 +12,9 @@
 //    - ติวเตอร์รองรับ 14 คนต่อแถว (เพิ่มจาก 13)
 //    - ตารางสรุป: H=CourseType, I-L=รายละเอียด(4 คอลัมน์), M=ชม.รวม, N=ยอดเงิน
 //    - ทุก cell ตั้งกึ่งกลาง ยกเว้นช่องรายละเอียด (left-aligned)
+// 🆕 Version 7.4 Changes:
+//    - ย้าย tutor mapping จาก Z1 → AA1
+//    - ตั้งค่าสีฟอนต์เป็นสีขาวเพื่อซ่อนข้อมูล mapping (ไม่ให้ติดมาตอนปริ้น)
 // ============================================================
 
 // ============================================================
@@ -391,15 +394,17 @@ function saveTutorDisplayToLineIdMapping(dashboard, tutorLineIdMap) {
 
   const jsonString = JSON.stringify(mapping);
 
-  // เก็บใน cell ที่ซ่อน (เช่น Z1)
-  dashboard.getRange('Z1').setValue(jsonString);
+  // เก็บใน cell ที่ซ่อน (AA1) และตั้งค่าสีฟอนต์เป็นสีขาว
+  dashboard.getRange('AA1')
+    .setValue(jsonString)
+    .setFontColor('#ffffff');
 }
 
 // ============================================================
 // 📖 LOAD TUTOR DISPLAY-TO-LINEID MAPPING
 // ============================================================
 function loadTutorDisplayToLineIdMapping(dashboard) {
-  const jsonString = dashboard.getRange('Z1').getValue();
+  const jsonString = dashboard.getRange('AA1').getValue();
   if (!jsonString) return {};
 
   try {
