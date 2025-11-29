@@ -1,9 +1,14 @@
 // ============================================================
-// 📊 DASHBOARD REPORT - VERSION 2.0
+// 📊 DASHBOARD REPORT - VERSION 8.0
 // ✅ Filter ใช้ร่วมกัน (ปี, เดือน, รอบ, นักเรียน, ติวเตอร์)
 // ✅ 2 ปุ่ม: รายงานนักเรียน + รายงานติวเตอร์
 // ✅ Compact Layout (~17 Rows)
 // ✅ ใช้ Shared Config และ Utils
+// 🆕 Version 8.0 Changes:
+//    - displayTutorReport() ใช้ Payment Rules (เหมือน Dashboard Payment)
+//    - เพิ่มคอลัมน์ยอดเงิน ในรายงานติวเตอร์
+//    - แก้ไขกรอบยอดรวม (SOLID_MEDIUM → SOLID)
+//    - แก้ไข layout calculation ป้องกันหัวตารางทับ checkbox
 // ============================================================
 
 // ============================================================
@@ -261,8 +266,8 @@ function updateReportCheckboxes() {
   // Display Student Checkboxes (Row 9-10, และอาจจะมีแถวเพิ่ม)
   const studentRowsUsed = displayCheckboxRow(dashboard, students, 9, 10, '#fffde7');
 
-  // Calculate tutor start row (หลังจากนักเรียน + 1 แถวว่าง)
-  const tutorStartRow = 9 + studentRowsUsed + 1;
+  // Calculate tutor start row (หลังจากนักเรียน + 2 แถวว่าง เพื่อไม่ให้ทับกัน)
+  const tutorStartRow = 9 + studentRowsUsed + 2;
 
   // Setup Tutor Header ใหม่
   dashboard.getRange(tutorStartRow, 1).setValue('👨‍🏫 ติวเตอร์').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.tutor);
@@ -277,6 +282,9 @@ function updateReportCheckboxes() {
   // Border for tutor section
   const tutorEndRow = tutorStartRow + tutorRowsUsed;
   dashboard.getRange(tutorStartRow, 1, tutorRowsUsed + 1, 13).setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
+
+  // Debug log เพื่อตรวจสอบ layout
+  Logger.log(`🔍 Layout Check: student section ends at row ${9 + studentRowsUsed - 1}, tutor starts at ${tutorStartRow}, tutor ends at ${tutorEndRow}`);
 
   // Update student header (Row 8 ไม่เคลื่อนที่)
   dashboard.getRange('A8').setValue('👤 นักเรียน').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.student);
@@ -751,6 +759,7 @@ function groupByStudent(filteredData) {
 
 // ============================================================
 // 📊 GROUP BY TUTOR
+// ✅ Version 8.0: ใช้ Payment Rules แบบเดียวกับ Dashboard Payment
 // ============================================================
 function groupByTutor(filteredData, tutorLookup) {
   const tutorMap = new Map();
@@ -760,6 +769,7 @@ function groupByTutor(filteredData, tutorLookup) {
     const displayName = row[3];  // Line Display Name
     const lineId = row[4];  // Line ID
     const student = row[5];
+    const subject = row[8];  // Book/Subject
     const date = row[6];
     const time = row[7];
     const totalHours = parseFloat(row[10]) || 0;
@@ -788,19 +798,37 @@ function groupByTutor(filteredData, tutorLookup) {
     const data = tutorMap.get(lineIdStr);
     data.students.add(student);
 
-    const rate = SHARED_CONFIG.RATES[courseType] || 150;
-    const amount = remaining === 0 ? (totalHours * rate) : 0;
+    // ✅ ใช้ Payment Rules แทนการคำนวณแบบเก่า
+    // โหลด Payment Rules ของติวเตอร์คนนี้
+    if (!data.tutorRules) {
+      data.tutorRules = getTutorPaymentRules(lineIdStr);
+    }
+
+    // สร้าง session object สำหรับ calculatePaymentWithRules()
+    const session = {
+      totalHours: totalHours,
+      remaining: remaining,
+      courseType: courseType,
+      duration: duration,
+      date: date
+    };
+
+    // คำนวณเงินโดยใช้ Payment Rules
+    const paymentResult = calculatePaymentWithRules(session, lineIdStr, data.tutorRules);
 
     data.sessions.push({
       date: date,
       time: time,
       student: student,
+      subject: subject,
       duration: duration,
       totalHours: totalHours,
       remaining: remaining,
       courseType: courseType,
-      amount: amount,
-      status: remaining === 0 ? '✅' : '⏳'
+      amount: paymentResult.amount,
+      rate: paymentResult.rate,
+      shouldPay: paymentResult.shouldPay,
+      status: paymentResult.shouldPay ? '✅' : '⏳'
     });
   });
 
@@ -1171,7 +1199,7 @@ function displayTutorReport(dashboard, tutorMap) {
 
   dashboard.getRange(currentRow, 1, 1, 13)
     .setBackground('#fef7e0')
-    .setBorder(true, true, true, true, true, true, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+    .setBorder(true, true, true, true, true, true, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
 
   dashboard.setRowHeight(currentRow, 28);
   currentRow += 2;  // เว้น 1 แถว
@@ -1207,8 +1235,8 @@ function displayTutorReport(dashboard, tutorMap) {
     dashboard.setRowHeight(currentRow, 28);
     currentRow++;
 
-    // Table Headers
-    const headers = ['วันที่', 'เวลา', 'นักเรียน', 'ชม.', 'Total', 'คงเหลือ', 'Course Type', '', '', 'Status', '', '', ''];
+    // Table Headers (Version 8.0: เพิ่มคอลัมน์ยอดเงิน)
+    const headers = ['วันที่', 'เวลา', 'นักเรียน', 'วิชา', 'CourseType', 'ชม.', '', '', 'Status', '', '', ''];
 
     dashboard.getRange(currentRow, 1, 1, 13)
       .setValues([headers])
@@ -1218,8 +1246,8 @@ function displayTutorReport(dashboard, tutorMap) {
       .setBackground(REPORT_CONFIG.COLORS.tableHeader)
       .setFontColor('#ffffff');
 
-    // Merge H-I for "ยอดเงิน"
-    dashboard.getRange(currentRow, 8, 1, 2).merge()
+    // Merge G-H for "ยอดเงิน"
+    dashboard.getRange(currentRow, 7, 1, 2).merge()
       .setValue('ยอดเงิน')
       .setFontWeight('bold')
       .setFontSize(8)
@@ -1227,8 +1255,8 @@ function displayTutorReport(dashboard, tutorMap) {
       .setBackground(REPORT_CONFIG.COLORS.tableHeader)
       .setFontColor('#ffffff');
 
-    // Merge K-M for "หมายเหตุ"
-    dashboard.getRange(currentRow, 11, 1, 3).merge()
+    // Merge J-M for "หมายเหตุ"
+    dashboard.getRange(currentRow, 10, 1, 4).merge()
       .setValue('หมายเหตุ')
       .setFontWeight('bold')
       .setFontSize(8)
@@ -1239,48 +1267,45 @@ function displayTutorReport(dashboard, tutorMap) {
     dashboard.setRowHeight(currentRow, 22);
     currentRow++;
 
-    // Sessions
+    // Sessions (Version 8.0: เพิ่มวิชา และยอดเงิน)
     data.sessions.forEach(session => {
       const dateStr = formatDateString(session.date);
 
       const rowData = [
-        dateStr,
-        session.time || '',
-        session.student || '',
-        session.duration,
-        session.totalHours,
-        session.remaining,
-        session.courseType || '',
-        '', '',              // H-I for ยอดเงิน (will merge)
-        session.status,      // J: Status
-        '', '', ''           // K-M for หมายเหตุ (will merge)
+        dateStr,                    // A: วันที่
+        session.time || '',         // B: เวลา
+        session.student || '',      // C: นักเรียน
+        session.subject || '',      // D: วิชา
+        session.courseType || '',   // E: CourseType
+        session.duration,           // F: ชม.
+        '', '',                     // G-H: ยอดเงิน (will merge)
+        session.status,             // I: Status
+        '', '', '', ''              // J-M: หมายเหตุ (will merge)
       ];
 
       dashboard.getRange(currentRow, 1, 1, 13).setValues([rowData]);
 
-      // Merge H-I for ยอดเงิน
-      dashboard.getRange(currentRow, 8, 1, 2).merge()
+      // Merge G-H for ยอดเงิน
+      dashboard.getRange(currentRow, 7, 1, 2).merge()
         .setValue(session.amount)
         .setNumberFormat('#,##0')
         .setFontSize(8)
         .setHorizontalAlignment('center');
 
-      // Merge K-M for หมายเหตุ (ว่างไว้ให้กรอก)
-      dashboard.getRange(currentRow, 11, 1, 3).merge()
+      // Merge J-M for หมายเหตุ (ว่างไว้ให้กรอก)
+      dashboard.getRange(currentRow, 10, 1, 4).merge()
         .setValue('')
         .setFontSize(8)
         .setHorizontalAlignment('left');
 
-      dashboard.getRange(currentRow, 4).setNumberFormat('#,##0.0');
-      dashboard.getRange(currentRow, 5).setNumberFormat('#,##0.0');
-      dashboard.getRange(currentRow, 6).setNumberFormat('#,##0.0');
+      dashboard.getRange(currentRow, 6).setNumberFormat('#,##0.0');  // ชม.
       dashboard.getRange(currentRow, 1, 1, 13).setFontSize(8);
 
-      // Conditional Formatting for Status (Column J)
+      // Conditional Formatting for Status (Column I)
       if (session.status === '✅') {
-        dashboard.getRange(currentRow, 10).setBackground(REPORT_CONFIG.COLORS.statusOK);
+        dashboard.getRange(currentRow, 9).setBackground(REPORT_CONFIG.COLORS.statusOK);
       } else {
-        dashboard.getRange(currentRow, 10).setBackground(REPORT_CONFIG.COLORS.statusPending);
+        dashboard.getRange(currentRow, 9).setBackground(REPORT_CONFIG.COLORS.statusPending);
       }
 
       currentRow++;
