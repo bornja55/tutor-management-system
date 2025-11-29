@@ -1,0 +1,99 @@
+สรุปสำหรับ Copy ไปเครื่องบ้าน
+คัดลอกข้อความด้านล่างนี้ทั้งหมด แล้ว paste ใน Claude Code ที่เครื่องบ้าน:
+# 🔄 ทำงานต่อจากเครื่องออฟฟิศ
+
+## Context
+โปรเจค: Google Apps Script - TutorDB Dashboard System
+Path: j:\My Drive\บันทึกการสอน\
+
+## สถานะปัจจุบัน
+
+### ✅ งานที่เสร็จแล้ว (Dashboard Payment v7.2)
+1. แก้ไข onsiteDay payment calculation - จ่ายเงิน 850 บาท/วัน (ไม่ใช่ต่อนักเรียน)
+2. แก้ไข Map key collision - ใช้ composite key (index + studentName + subject)
+3. อัพเดต clear functions จาก 13 columns เป็น 14 columns (รวม Column N: หมายเหตุ)
+4. สร้าง Git repository เรียบร้อยแล้ว (commit แรก: ffa2adb)
+
+### 📋 งานที่รออยู่ (Dashboard Report v8.0)
+
+**แผนการพัฒนา: แยก Dashboard Report เป็น 2 Mode**
+
+#### Mode 1: รายงานนักเรียน (Student Mode)
+**ผู้ใช้:** ผู้ปกครอง/นักเรียน  
+**จุดประสงค์:** รายงานความก้าวหน้าการเรียน  
+**ข้อมูลที่เน้น:**
+- ✅ ชั่วโมงคงเหลือ, ความก้าวหน้า (คอร์สจบ/ทั้งหมด)
+- ✅ Feedback จากติวเตอร์ (เด่นชัด, column กว้าง)
+- ✅ Book/Topic ที่เรียน
+- ✅ วันที่/เวลา/ติวเตอร์
+- ❌ ไม่แสดงยอดเงิน
+
+**Columns:** วันที่, เวลา, ติวเตอร์, ชม., คงเหลือ, Book, Topic, Feedback, Status
+
+#### Mode 2: รายงานติวเตอร์ (Tutor Mode)
+**ผู้ใช้:** ติวเตอร์  
+**จุดประสงค์:** ตรวจสอบรายได้ (ส่งทุก 15 วัน)  
+**ข้อมูลที่เน้น:**
+- ✅ ยอดเงินรวม (เด่นชัด, bold)
+- ✅ รายละเอียดการสอนแยกตาม courseType
+- ✅ ชั่วโมง, ยอดเงินแต่ละคอร์ส
+- ✅ ใช้ Payment Rules เหมือน Dashboard Payment
+- ❌ ไม่แสดง Feedback, Book, Topic
+
+**Columns:** วันที่, เวลา, นักเรียน, วิชา, CourseType, ชม., ยอดเงิน, Status
+
+### 🎯 Tasks ที่ต้องทำต่อ
+
+1. **แก้ไข displayTutorReport()** - ใช้ Payment Rules และเพิ่มคอลัมน์ยอดเงิน
+2. **แก้ไข displayStudentReport()** - ลบยอดเงิน เน้น Feedback
+3. **แก้ไขหัวตารางที่ทับ checkbox ติวเตอร์** - ปรับ layout calculation
+4. **แก้ไขยอดรวมให้ไม่มีกรอบเข้ม** - dashboard report.gs:1174 เปลี่ยนจาก SOLID_MEDIUM เป็น SOLID
+
+### 📁 ไฟล์สำคัญ
+- `dashboard payment.gs` - ✅ แก้เสร็จแล้ว (v7.2)
+- `dashboard report.gs` - ⏳ รอแก้ (จะเป็น v8.0)
+- `shared config.gs` - อาจต้องเพิ่ม config
+- `utils shared.gs` - อาจต้อง refactor payment calculation
+
+### 🔧 Technical Details
+
+**Payment Rules ที่ต้องใช้:**
+- online1by1: 100 บาท/ชม., min 3 ชม. = 300 บาท
+- onsite1by1: 150 บาท/ชม., min 2 ชม. = 300 บาท  
+- onsiteGroup: 100 บาท/ชม.
+- **onsiteDay: 850 บาท/วัน** (flat rate ไม่ว่ากี่นักเรียน)
+
+**Bug ที่แก้แล้วใน Dashboard Payment:**
+- onsiteDay จ่ายครั้งเดียวต่อวัน (ใช้ Set ติดตามวันที่จ่ายแล้ว)
+- Map collision (ใช้ composite key แทน studentName)
+- Clear 14 columns แทน 13
+
+### 📊 Git Status
+```bash
+git log --oneline
+# ffa2adb Initial commit: Dashboard Payment v7.2 + Dashboard Report v2.0
+
+git status
+# On branch master
+# Working directory clean
+🚀 คำสั่งเพื่อเริ่มต่อ
+พิมพ์หนึ่งในนี้:
+"เริ่มทำ task แรก: แก้ไข displayTutorReport()"
+"แสดง todo list"
+"อธิบายแผนการแก้ไข displayTutorReport() ก่อน"
+
+---
+
+## 💾 **วิธีใช้ที่เครื่องบ้าน:**
+
+1. **Copy ข้อความด้านบนทั้งหมด** (ตั้งแต่ `# 🔄 ทำงานต่อ...` ถึง สุดท้าย)
+2. **ที่เครื่องบ้าน:**
+   - เปิด VS Code
+   - เปิดโฟลเดอร์ `My Drive\บันทึกการสอน`
+   - เปิด Claude Code (สร้าง **New Chat**)
+   - **Paste** ข้อความทั้งหมด
+   - Claude จะเข้าใจ context และพร้อมทำงานต่อทันที
+
+---
+
+**คุณต้องการให้ผมสร้างเป็นไฟล์ markdown บันทึกไว้ด้วยไหมครับ?** เช่น `SESSION_CONTINUE.md` เพื่อให้

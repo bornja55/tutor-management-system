@@ -1,11 +1,17 @@
 // ============================================================
-// 💰 DASHBOARD PAYMENT - VERSION 7.2 PAYMENT-FIRST DESIGN
+// 💰 DASHBOARD PAYMENT - VERSION 7.3 EXTENDED LAYOUT
 // ✅ Layout แนวนอนแบบ Compact (เหมือน Dashboard Report)
 // ✅ ปี + เดือน + รอบ แนวนอน
-// ✅ ติวเตอร์ Compact (12 คนต่อแถว)
+// ✅ ติวเตอร์ Compact (14 คนต่อแถว) - ขยายจาก 13
 // ✅ ใช้ Shared Config และ Utils
 // 🆕 Payment-First: เน้น courseType เป็นหลัก
 // 🆕 onsiteDay: แสดงวันที่ + รายชื่อนักเรียน(ชม.)
+// 🆕 Version 7.3 Changes:
+//    - ขยายทุกส่วนเป็น 14 columns (A-N)
+//    - เพิ่ม checkbox "ทั้งหมด" สำหรับ ปี, รอบ, เดือน
+//    - ติวเตอร์รองรับ 14 คนต่อแถว (เพิ่มจาก 13)
+//    - ตารางสรุป: H=CourseType, I-L=รายละเอียด(4 คอลัมน์), M=ชม.รวม, N=ยอดเงิน
+//    - ทุก cell ตั้งกึ่งกลาง ยกเว้นช่องรายละเอียด (left-aligned)
 // ============================================================
 
 // ============================================================
@@ -28,9 +34,9 @@ function setupDashboardPayment() {
   }
 
   // ============================================================
-  // ROW 1: HEADER
+  // ROW 1: HEADER (ขยายเป็น 14 columns)
   // ============================================================
-  dashboard.getRange('A1:M1').merge()
+  dashboard.getRange('A1:N1').merge()
     .setValue('💰 Dashboard Payment - รายงานสรุปการสอน')
     .setFontSize(16)
     .setFontWeight('bold')
@@ -41,54 +47,52 @@ function setupDashboardPayment() {
   dashboard.setRowHeight(1, 45);
 
   // ============================================================
-  // ROW 3: ปี + รอบ + ปุ่มอัพเดต (แนวนอน 1 แถว)
+  // ROW 3: ปี + รอบ + ปุ่มอัพเดต (แนวนอน 1 แถว) + เพิ่ม checkbox "ทั้งหมด"
   // ============================================================
   // ปี
   dashboard.getRange('A3').setValue('📅 ปี').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('B3').setValue('2025').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('C3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('D3').setValue('2026').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('B3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);  // Checkbox "ทั้งหมด"
+  dashboard.getRange('C3').setValue('ทั้งหมด').setHorizontalAlignment('center').setFontSize(8).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('D3').setValue('2025').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
   dashboard.getRange('E3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('F3').setValue('2026').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('G3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
 
   // รอบ
-  dashboard.getRange('F3').setValue('📅 รอบ').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('G3').setValue('1-15').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('H3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('I3').setValue('16-30').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('J3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-
-  // ปุ่มอัพเดต
-  dashboard.getRange('K3:M3').merge()
-    .setValue('🔄 อัพเดต')
-    .setFontSize(10)
-    .setFontWeight('bold')
-    .setHorizontalAlignment('center')
-    .setVerticalAlignment('middle')
-    .setBackground(PAYMENT_CONFIG.COLORS.updateButton)
-    .setFontColor('#000000');
+  dashboard.getRange('H3').setValue('📅 รอบ').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('I3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);  // Checkbox "ทั้งหมด"
+  dashboard.getRange('J3').setValue('ทั้งหมด').setHorizontalAlignment('center').setFontSize(8).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('K3').setValue('1-15').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('L3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('M3').setValue('16-30').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('N3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
 
   dashboard.setRowHeight(3, 30);
-  dashboard.getRange('A3:M3').setBorder(true, true, true, true, true, true, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
+  dashboard.getRange('A3:N3').setBorder(true, true, true, true, true, true, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
 
   // ============================================================
-  // ROW 5-6: เดือน (A5 = Label, B5-M5 = 12 เดือน)
+  // ROW 5-6: เดือน + เพิ่ม checkbox "ทั้งหมด" + ปุ่มอัพเดต
   // ============================================================
   // A5: Label "เดือน"
   dashboard.getRange('A5').setValue('เดือน').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.month).setHorizontalAlignment('center');
-  dashboard.getRange('A6').setBackground(PAYMENT_CONFIG.COLORS.month);
+  dashboard.getRange('A6').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.month);  // Checkbox "ทั้งหมด"
 
-  // Row 5: ชื่อเดือน (B5-M5 = 12 เดือน)
+  // B5: Label "ทั้งหมด"
+  dashboard.getRange('B5').setValue('ทั้งหมด').setHorizontalAlignment('center').setFontSize(8).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.month);
+  dashboard.getRange('B6').setBackground(PAYMENT_CONFIG.COLORS.month);
+
+  // Row 5: ชื่อเดือน (C5-N5 = 12 เดือน)
   SHARED_CONFIG.MONTH_SHORT.forEach((month, index) => {
-    dashboard.getRange(5, index + 2)  // B5-M5
+    dashboard.getRange(5, index + 3)  // C5-N5
       .setValue(month)
       .setHorizontalAlignment('center')
       .setFontSize(8)
       .setBackground(PAYMENT_CONFIG.COLORS.month);
   });
 
-  // Row 6: Checkbox เดือน (B6-M6 = 12 เดือน)
+  // Row 6: Checkbox เดือน (C6-N6 = 12 เดือน)
   for (let i = 0; i < 12; i++) {
-    dashboard.getRange(6, i + 2)  // B6-M6
+    dashboard.getRange(6, i + 3)  // C6-N6
       .insertCheckboxes()
       .setHorizontalAlignment('center')
       .setBackground(PAYMENT_CONFIG.COLORS.month);
@@ -96,36 +100,50 @@ function setupDashboardPayment() {
 
   dashboard.setRowHeight(5, 22);
   dashboard.setRowHeight(6, 25);
-  dashboard.getRange('A5:M6').setBorder(true, true, true, true, true, true, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
+  dashboard.getRange('A5:N6').setBorder(true, true, true, true, true, true, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
 
   // ============================================================
-  // ROW 8: ติวเตอร์ Header
+  // ROW 7: ปุ่มอัพเดต (ย้ายมาแถว 7)
   // ============================================================
-  dashboard.getRange('A8').setValue('👨‍🏫 ติวเตอร์').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.getRange('B8').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.getRange('C8').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.getRange('D8').setValue('(กด "อัพเดต" เพื่อแสดงรายชื่อ)').setFontSize(8).setFontColor('#999999').setFontStyle('italic').setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  // E8:M8 ไว้ให้ dynamic checkbox ใช้
-  dashboard.getRange('E8:M8').setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.setRowHeight(8, 25);
-
-  // ROW 9-10: Placeholder ติวเตอร์ (Label + Checkbox)
-  dashboard.getRange('A9:M9').setBackground('#d9ead3');
-  dashboard.getRange('A10:M10').setBackground('#d9ead3');
-  dashboard.setRowHeight(9, 20);
-  dashboard.setRowHeight(10, 22);
-  dashboard.getRange('A8:M10').setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
+  dashboard.getRange('A7:N7').merge()
+    .setValue('🔄 อัพเดต')
+    .setFontSize(10)
+    .setFontWeight('bold')
+    .setHorizontalAlignment('center')
+    .setVerticalAlignment('middle')
+    .setBackground(PAYMENT_CONFIG.COLORS.updateButton)
+    .setFontColor('#000000');
+  dashboard.setRowHeight(7, 30);
+  dashboard.getRange('A7:N7').setBorder(true, true, true, true, true, true, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
 
   // ============================================================
-  // ROW 12+: ปุ่มสร้างรายงาน, Table Header
+  // ROW 9: ติวเตอร์ Header (ย้ายจาก row 8 → row 9)
+  // ============================================================
+  dashboard.getRange('A9').setValue('👨‍🏫 ติวเตอร์').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.tutor);
+  dashboard.getRange('B9').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.tutor);
+  dashboard.getRange('C9').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.tutor);
+  dashboard.getRange('D9').setValue('(กด "อัพเดต" เพื่อแสดงรายชื่อ)').setFontSize(8).setFontColor('#999999').setFontStyle('italic').setBackground(PAYMENT_CONFIG.COLORS.tutor);
+  // E9:N9 ไว้ให้ dynamic checkbox ใช้
+  dashboard.getRange('E9:N9').setBackground(PAYMENT_CONFIG.COLORS.tutor);
+  dashboard.setRowHeight(9, 25);
+
+  // ROW 10-11: Placeholder ติวเตอร์ (Label + Checkbox)
+  dashboard.getRange('A10:N10').setBackground('#d9ead3');
+  dashboard.getRange('A11:N11').setBackground('#d9ead3');
+  dashboard.setRowHeight(10, 20);
+  dashboard.setRowHeight(11, 22);
+  dashboard.getRange('A9:N11').setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
+
+  // ============================================================
+  // ROW 13+: ปุ่มสร้างรายงาน, Table Header
   // ============================================================
   // NOTE: จะถูกสร้างใน updateTutorCheckboxesPayment() แบบ dynamic
   // เพื่อไม่ให้ถูกทับโดย checkbox sections
 
   // ============================================================
-  // COLUMN WIDTHS
+  // COLUMN WIDTHS (ขยายเป็น 14 columns)
   // ============================================================
-  for (let i = 1; i <= 13; i++) {
+  for (let i = 1; i <= 14; i++) {
     dashboard.setColumnWidth(i, 70);
   }
 
@@ -202,23 +220,23 @@ function updateTutorCheckboxesPayment() {
 
   Logger.log('👨‍🏫 Tutors: ' + tutors.length);
 
-  // Display Tutor Checkboxes (Row 9-10, และอาจจะมีแถวเพิ่ม)
-  const tutorRowsUsed = displayCheckboxRowPayment(dashboard, tutors, 9, 10, '#d9ead3');
+  // Display Tutor Checkboxes (Row 10-11, และอาจจะมีแถวเพิ่ม) - Changed from 9-10
+  const tutorRowsUsed = displayCheckboxRowPayment(dashboard, tutors, 10, 11, '#d9ead3');
 
-  // Update tutor header (Row 8 ไม่เคลื่อนที่)
-  dashboard.getRange('A8').setValue('👨‍🏫 ติวเตอร์').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.getRange('B8').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.getRange('C8').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.getRange('D8').setValue('(' + tutors.length + ' คน)').setFontSize(8).setFontColor('#666666').setFontStyle('italic').setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.getRange('E8:M8').setValue('').setBackground(PAYMENT_CONFIG.COLORS.tutor);  // เคลียร์ E8:M8
+  // Update tutor header (Row 9 - moved from row 8)
+  dashboard.getRange('A9').setValue('👨‍🏫 ติวเตอร์').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.tutor);
+  dashboard.getRange('B9').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.tutor);
+  dashboard.getRange('C9').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.tutor);
+  dashboard.getRange('D9').setValue('(' + tutors.length + ' คน)').setFontSize(8).setFontColor('#666666').setFontStyle('italic').setBackground(PAYMENT_CONFIG.COLORS.tutor);
+  dashboard.getRange('E9:N9').setValue('').setBackground(PAYMENT_CONFIG.COLORS.tutor);  // เคลียร์ E9:N9 (changed from E8:M8)
 
-  // Border for tutor section
-  dashboard.getRange(8, 1, tutorRowsUsed + 1, 13).setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
+  // Border for tutor section (14 columns, changed from 13)
+  dashboard.getRange(9, 1, tutorRowsUsed + 1, 14).setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
 
   // ============================================================
   // DYNAMIC LAYOUT: ไม่มีปุ่มสร้างรายงาน (ลบออกแล้ว)
   // ============================================================
-  const tutorEndRow = 9 + tutorRowsUsed;  // Row 9 = tutor start, + tutorRowsUsed
+  const tutorEndRow = 10 + tutorRowsUsed;  // Row 10 = tutor start (changed from 9), + tutorRowsUsed
 
   // Clear old dynamic sections (ล้างแถว 12 เป็นต้นไป)
   const maxClearRow = 50;
@@ -240,12 +258,12 @@ function updateTutorCheckboxesPayment() {
 
 // ============================================================
 // 📊 DISPLAY CHECKBOX ROW (Label Row + Checkbox Row) - PAYMENT
-// รองรับ 13 คน/แถว (A-M), ถ้ามากกว่า 13 ให้เพิ่มอีก 2 แถว
+// รองรับ 14 คน/แถว (A-N), ถ้ามากกว่า 14 ให้เพิ่มอีก 2 แถว
 // Return: จำนวนแถวที่ใช้ (label + checkbox rows)
 // ============================================================
 function displayCheckboxRowPayment(dashboard, items, labelRow, checkboxRow, bgColor) {
-  const maxPerRow = 13;  // A-M = 13 คอลัม
-  const maxRows = 3;     // รองรับสูงสุด 3 แถว (13+13+13 = 39 คน)
+  const maxPerRow = 14;  // A-N = 14 คอลัม
+  const maxRows = 3;     // รองรับสูงสุด 3 แถว (14+14+14 = 42 คน)
 
   // Calculate rows needed
   const rowsNeeded = Math.min(Math.ceil(items.length / maxPerRow), maxRows);
@@ -297,13 +315,18 @@ function displayCheckboxRowPayment(dashboard, items, labelRow, checkboxRow, bgCo
 function getSelectedYearsPayment(dashboard) {
   const years = [];
 
-  // 2025: C3
-  if (dashboard.getRange('C3').getValue() === true) {
+  // Check "ทั้งหมด" checkbox at B3
+  if (dashboard.getRange('B3').getValue() === true) {
+    return [2025, 2026];  // Return all years
+  }
+
+  // 2025: E3 (moved from C3)
+  if (dashboard.getRange('E3').getValue() === true) {
     years.push(2025);
   }
 
-  // 2026: E3
-  if (dashboard.getRange('E3').getValue() === true) {
+  // 2026: G3 (moved from E3)
+  if (dashboard.getRange('G3').getValue() === true) {
     years.push(2026);
   }
 
@@ -316,9 +339,14 @@ function getSelectedYearsPayment(dashboard) {
 function getSelectedMonthsPayment(dashboard) {
   const months = [];
 
-  // B6-M6 = เดือน 0-11
+  // Check "ทั้งหมด" checkbox at A6
+  if (dashboard.getRange('A6').getValue() === true) {
+    return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];  // Return all months
+  }
+
+  // C6-N6 = เดือน 0-11 (moved from B6-M6)
   for (let i = 0; i < 12; i++) {
-    if (dashboard.getRange(6, i + 2).getValue() === true) {
+    if (dashboard.getRange(6, i + 3).getValue() === true) {
       months.push(i);  // 0-11
     }
   }
@@ -332,13 +360,18 @@ function getSelectedMonthsPayment(dashboard) {
 function getSelectedPeriodsPayment(dashboard) {
   const periods = [];
 
-  // 1-15: H3
-  if (dashboard.getRange('H3').getValue() === true) {
+  // Check "ทั้งหมด" checkbox at I3
+  if (dashboard.getRange('I3').getValue() === true) {
+    return ['1-15', '16-30'];  // Return all periods
+  }
+
+  // 1-15: L3 (moved from H3)
+  if (dashboard.getRange('L3').getValue() === true) {
     periods.push('1-15');
   }
 
-  // 16-30: J3
-  if (dashboard.getRange('J3').getValue() === true) {
+  // 16-30: N3 (moved from J3)
+  if (dashboard.getRange('N3').getValue() === true) {
     periods.push('16-30');
   }
 
@@ -381,8 +414,8 @@ function loadTutorDisplayToLineIdMapping(dashboard) {
 // 👥 GET SELECTED TUTORS (คืนค่าเป็น Line ID)
 // ============================================================
 function getSelectedTutorsPayment(dashboard) {
-  // Check "ทั้งหมด"
-  if (dashboard.getRange('B8').getValue() === true) {
+  // Check "ทั้งหมด" at B9 (moved from B8)
+  if (dashboard.getRange('B9').getValue() === true) {
     return [];
   }
 
@@ -393,13 +426,13 @@ function getSelectedTutorsPayment(dashboard) {
   const maxRows = 3;  // รองรับ 3 แถว
 
   for (let rowGroup = 0; rowGroup < maxRows; rowGroup++) {
-    const labelRow = 9 + (rowGroup * 2);
+    const labelRow = 10 + (rowGroup * 2);  // Changed from 9 to 10 (tutor section moved down)
     const checkRow = labelRow + 1;
 
-    const labels = dashboard.getRange(labelRow, 1, 1, 13).getValues()[0];  // A-M
-    const checks = dashboard.getRange(checkRow, 1, 1, 13).getValues()[0];
+    const labels = dashboard.getRange(labelRow, 1, 1, 14).getValues()[0];  // A-N (changed from 13 to 14)
+    const checks = dashboard.getRange(checkRow, 1, 1, 14).getValues()[0];  // A-N (changed from 13 to 14)
 
-    for (let i = 0; i < 13; i++) {
+    for (let i = 0; i < 14; i++) {  // Changed from 13 to 14
       if (checks[i] === true && labels[i]) {
         const displayName = String(labels[i]);
         const lineId = displayToLineId[displayName];
@@ -850,7 +883,7 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
   // ============================================================
 
   // Summary Table Title
-  dashboard.getRange(currentRow, 1, 1, 13).merge()
+  dashboard.getRange(currentRow, 1, 1, 14).merge()
     .setValue('💰 ตารางสรุปยอดชำระเงินติวเตอร์')
     .setFontSize(12)
     .setFontWeight('bold')
@@ -861,12 +894,12 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
   dashboard.setRowHeight(currentRow, 35);
   currentRow++;
 
-  // Summary Table Headers
+  // Summary Table Headers (14 columns: A-N)
   const overallSummaryHeaders = [
-    '#', 'รอบวันที่', 'รอบ', 'Display Name', '', 'ชื่อจริง', '', 'รายละเอียด', '', '', 'ชม.รวม', '', 'ยอดเงิน'
+    '#', 'รอบวันที่', 'รอบ', 'Display Name', '', 'ชื่อจริง', '', 'CourseType', 'รายละเอียด', '', '', '', 'ชม.รวม', 'ยอดเงิน'
   ];
 
-  dashboard.getRange(currentRow, 1, 1, 13)
+  dashboard.getRange(currentRow, 1, 1, 14)
     .setValues([overallSummaryHeaders])
     .setFontWeight('bold')
     .setFontSize(9)
@@ -892,8 +925,8 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
     .setBackground('#4285f4')
     .setFontColor('#ffffff');
 
-  // Merge H-J: รายละเอียด
-  dashboard.getRange(currentRow, 8, 1, 3).merge()
+  // Merge I-L: รายละเอียด (4 columns)
+  dashboard.getRange(currentRow, 9, 1, 4).merge()
     .setValue('รายละเอียด')
     .setFontWeight('bold')
     .setFontSize(9)
@@ -928,21 +961,20 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
         '', '',                          // D-E: จะ merge ภายหลัง
         '', '',                          // F-G: จะ merge ภายหลัง
         courseType || '',                // H: Course Type
-        '', '',                          // I-J: รายละเอียด (will merge)
-        group.totalHours || 0,           // K: ชม.รวม
-        '',                              // L: (space)
-        group.totalAmount || 0           // M: ยอดเงิน
+        '', '', '', '',                  // I-L: รายละเอียด (will merge, 4 columns)
+        group.totalHours || 0,           // M: ชม.รวม
+        group.totalAmount || 0           // N: ยอดเงิน
       ];
 
       // Debug
-      if (summaryRowData.length !== 13) {
-        Logger.log(`ERROR at courseType summary: ${summaryRowData.length} elements (expected 13)`);
+      if (summaryRowData.length !== 14) {
+        Logger.log(`ERROR at courseType summary: ${summaryRowData.length} elements (expected 14)`);
         Logger.log(`courseType: ${courseType}, group: ${JSON.stringify(group)}`);
         Logger.log(`Data: ${JSON.stringify(summaryRowData)}`);
-        throw new Error(`summaryRowData has ${summaryRowData.length} elements, expected 13`);
+        throw new Error(`summaryRowData has ${summaryRowData.length} elements, expected 14`);
       }
 
-      dashboard.getRange(currentRow, 1, 1, 13).setValues([summaryRowData]);
+      dashboard.getRange(currentRow, 1, 1, 14).setValues([summaryRowData]);
 
       // H: Course Type
       dashboard.getRange(currentRow, 8)
@@ -950,28 +982,28 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
         .setFontSize(8)
         .setFontWeight('bold');
 
-      // I-J: รายละเอียด (merge)
-      dashboard.getRange(currentRow, 9, 1, 2).merge()
+      // I-L: รายละเอียด (merge 4 columns)
+      dashboard.getRange(currentRow, 9, 1, 4).merge()
         .setValue(group.summaryText)
         .setHorizontalAlignment('left')
         .setFontSize(7)
         .setWrap(true)
         .setVerticalAlignment('top');
 
-      // K: ชม.รวม
-      dashboard.getRange(currentRow, 11)
+      // M: ชม.รวม
+      dashboard.getRange(currentRow, 13)
         .setHorizontalAlignment('center')
         .setFontSize(8)
         .setNumberFormat('#,##0.0');
 
-      // M: ยอดเงิน
-      dashboard.getRange(currentRow, 13)
+      // N: ยอดเงิน
+      dashboard.getRange(currentRow, 14)
         .setNumberFormat('#,##0')
         .setFontSize(8)
         .setHorizontalAlignment('center');
 
       // Border
-      dashboard.getRange(currentRow, 1, 1, 13).setBorder(
+      dashboard.getRange(currentRow, 1, 1, 14).setBorder(
         true, true, true, true, true, true,
         '#cccccc',
         SpreadsheetApp.BorderStyle.SOLID
@@ -986,13 +1018,12 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
     const totalRowData = [
       '', '', '', '', '', '', '',
       '**รวม**',                         // H: รวม
-      '', '',
-      totalDuration || 0,                // K: ชม.รวม
-      '',
-      totalAmount || 0                   // M: ยอดเงิน
+      '', '', '', '',                    // I-L: empty
+      totalDuration || 0,                // M: ชม.รวม
+      totalAmount || 0                   // N: ยอดเงิน
     ];
 
-    dashboard.getRange(currentRow, 1, 1, 13).setValues([totalRowData]);
+    dashboard.getRange(currentRow, 1, 1, 14).setValues([totalRowData]);
 
     // H: รวม (bold)
     dashboard.getRange(currentRow, 8)
@@ -1000,25 +1031,25 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
       .setFontSize(9)
       .setFontWeight('bold');
 
-    // K: ชม.รวม (bold)
-    dashboard.getRange(currentRow, 11)
+    // M: ชม.รวม (bold)
+    dashboard.getRange(currentRow, 13)
       .setHorizontalAlignment('center')
       .setFontSize(9)
       .setFontWeight('bold')
       .setNumberFormat('#,##0.0');
 
-    // M: ยอดเงิน (bold)
-    dashboard.getRange(currentRow, 13)
+    // N: ยอดเงิน (bold)
+    dashboard.getRange(currentRow, 14)
       .setNumberFormat('#,##0')
       .setFontSize(10)
       .setFontWeight('bold')
       .setHorizontalAlignment('center');
 
     // Background สีเหลือง
-    dashboard.getRange(currentRow, 1, 1, 13).setBackground('#fef7e0');
+    dashboard.getRange(currentRow, 1, 1, 14).setBackground('#fef7e0');
 
     // Border
-    dashboard.getRange(currentRow, 1, 1, 13).setBorder(
+    dashboard.getRange(currentRow, 1, 1, 14).setBorder(
       true, true, true, true, true, true,
       '#cccccc',
       SpreadsheetApp.BorderStyle.SOLID_MEDIUM
@@ -1072,37 +1103,36 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
     '', '', '',                        // A-C: Empty
     '', '',                            // D-E: Empty (will merge)
     '', '',                            // F-G: Empty
-    '', '', '',                        // H-J: รวมทั้งหมด (will merge)
-    totalHoursOverall || 0,            // K: ชม.รวม
-    '',                                // L: (space)
-    totalAmountOverall || 0            // M: ยอดเงิน
+    '', '', '', '', '',                // H-L: รวมทั้งหมด (will merge, 5 columns)
+    totalHoursOverall || 0,            // M: ชม.รวม
+    totalAmountOverall || 0            // N: ยอดเงิน
   ];
 
-  dashboard.getRange(currentRow, 1, 1, 13).setValues([overallTotalData]);
+  dashboard.getRange(currentRow, 1, 1, 14).setValues([overallTotalData]);
 
-  // H-J: รวมทั้งหมด (merge)
-  dashboard.getRange(currentRow, 8, 1, 3).merge()
+  // H-L: รวมทั้งหมด (merge 5 columns)
+  dashboard.getRange(currentRow, 8, 1, 5).merge()
     .setValue('รวมทั้งหมด')
     .setHorizontalAlignment('right')
     .setFontWeight('bold')
     .setFontSize(9);
 
-  // K: ชม.รวม
-  dashboard.getRange(currentRow, 11)
+  // M: ชม.รวม
+  dashboard.getRange(currentRow, 13)
     .setHorizontalAlignment('center')
     .setFontWeight('bold')
     .setFontSize(9)
     .setNumberFormat('#,##0.0');
 
-  // M: ยอดเงิน
-  dashboard.getRange(currentRow, 13)
+  // N: ยอดเงิน
+  dashboard.getRange(currentRow, 14)
     .setValue(totalAmountOverall)
     .setNumberFormat('#,##0')
     .setFontSize(10)
     .setFontWeight('bold')
     .setHorizontalAlignment('center');
 
-  dashboard.getRange(currentRow, 1, 1, 13)
+  dashboard.getRange(currentRow, 1, 1, 14)
     .setBackground('#fef7e0')
     .setBorder(true, true, true, true, true, true, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 
@@ -1114,7 +1144,7 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
   // ============================================================
 
   // Details Section Title with note
-  dashboard.getRange(currentRow, 1, 1, 13).merge()
+  dashboard.getRange(currentRow, 1, 1, 14).merge()
     .setValue('📋 รายละเอียดการสอนแต่ละติวเตอร์ (ตรวจสอบรายละเอียดเพิ่มเติม)')
     .setFontSize(11)
     .setFontWeight('bold')
@@ -1157,12 +1187,12 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
     // TUTOR SUMMARY ROW (ข้อมูลสรุปติวเตอร์)
     // ============================================================
 
-    // Summary Table Headers
+    // Summary Table Headers (14 columns: A-N)
     const summaryHeaders = [
-      '#', 'รอบวันที่', 'รอบ', 'Display Name', '', 'ชื่อจริง', '', 'รายละเอียด', '', '', 'ชม.รวม', '', 'ยอดเงิน'
+      '#', 'รอบวันที่', 'รอบ', 'Display Name', '', 'ชื่อจริง', '', 'CourseType', 'รายละเอียด', '', '', '', 'ชม.รวม', 'ยอดเงิน'
     ];
 
-    dashboard.getRange(currentRow, 1, 1, 13)
+    dashboard.getRange(currentRow, 1, 1, 14)
       .setValues([summaryHeaders])
       .setFontWeight('bold')
       .setFontSize(9)
@@ -1188,8 +1218,8 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
       .setBackground('#4285f4')
       .setFontColor('#ffffff');
 
-    // Merge H-J: รายละเอียด
-    dashboard.getRange(currentRow, 8, 1, 3).merge()
+    // Merge I-L: รายละเอียด (4 columns)
+    dashboard.getRange(currentRow, 9, 1, 4).merge()
       .setValue('รายละเอียด')
       .setFontWeight('bold')
       .setFontSize(9)
@@ -1203,27 +1233,27 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
     // สร้างข้อความสรุปรายละเอียดสำหรับติวเตอร์คนนี้
     const tutorDetailsText = createSummaryDetailsText(tutorDetail.students);
 
-    // Summary Data Row
+    // Summary Data Row (14 columns: A-N)
     const summaryRowData = [
       tutorSummary.index || 0,           // A: #
       periodText || '',                  // B: รอบวันที่
       periodShort || '',                 // C: รอบ
       '', '',                            // D-E: Display Name (will merge)
       '', '',                            // F-G: ชื่อจริง (will merge)
-      '', '', '',                        // H-J: รายละเอียด (will merge)
-      tutorSummary.totalDuration || 0,   // K: ชม.รวม
-      '',                                // L: (space)
-      tutorSummary.totalAmount || 0      // M: ยอดเงิน
+      '',                                // H: CourseType (leave empty for summary)
+      '', '', '', '',                    // I-L: รายละเอียด (will merge, 4 columns)
+      tutorSummary.totalDuration || 0,   // M: ชม.รวม
+      tutorSummary.totalAmount || 0      // N: ยอดเงิน
     ];
 
     // Debug: Check array length
-    if (summaryRowData.length !== 13) {
-      Logger.log(`ERROR: summaryRowData has ${summaryRowData.length} elements, expected 13`);
+    if (summaryRowData.length !== 14) {
+      Logger.log(`ERROR: summaryRowData has ${summaryRowData.length} elements, expected 14`);
       Logger.log(`Data: ${JSON.stringify(summaryRowData)}`);
-      throw new Error(`summaryRowData has ${summaryRowData.length} elements, expected 13`);
+      throw new Error(`summaryRowData has ${summaryRowData.length} elements, expected 14`);
     }
 
-    dashboard.getRange(currentRow, 1, 1, 13).setValues([summaryRowData]);
+    dashboard.getRange(currentRow, 1, 1, 14).setValues([summaryRowData]);
 
     // Format individual cells
     dashboard.getRange(currentRow, 1).setHorizontalAlignment('center').setFontSize(8);
@@ -1242,22 +1272,22 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
       .setHorizontalAlignment('left')
       .setFontSize(8);
 
-    // H-J: รายละเอียด (merge)
-    dashboard.getRange(currentRow, 8, 1, 3).merge()
+    // I-L: รายละเอียด (merge 4 columns)
+    dashboard.getRange(currentRow, 9, 1, 4).merge()
       .setValue(tutorDetailsText)
       .setHorizontalAlignment('left')
       .setFontSize(7)
       .setWrap(true)
       .setVerticalAlignment('top');
 
-    // K: ชม.รวม
-    dashboard.getRange(currentRow, 11)
+    // M: ชม.รวม
+    dashboard.getRange(currentRow, 13)
       .setHorizontalAlignment('center')
       .setFontSize(8)
       .setNumberFormat('#,##0.0');
 
-    // M: ยอดเงิน
-    dashboard.getRange(currentRow, 13)
+    // N: ยอดเงิน
+    dashboard.getRange(currentRow, 14)
       .setValue(tutorSummary.totalAmount)
       .setNumberFormat('#,##0')
       .setFontSize(9)
@@ -1265,10 +1295,10 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
       .setHorizontalAlignment('center');
 
     // Background color
-    dashboard.getRange(currentRow, 1, 1, 13).setBackground('#e8f0fe');
+    dashboard.getRange(currentRow, 1, 1, 14).setBackground('#e8f0fe');
 
     // Border
-    dashboard.getRange(currentRow, 1, 1, 13).setBorder(
+    dashboard.getRange(currentRow, 1, 1, 14).setBorder(
       true, true, true, true, true, true,
       '#cccccc',
       SpreadsheetApp.BorderStyle.SOLID
