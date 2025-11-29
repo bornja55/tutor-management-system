@@ -1,0 +1,27 @@
+# Google Apps Script
+~$*.gs
+*.tmp
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+*.swp
+*.swo
+*~
+
+# Backup files
+*.bak
+*.backup
+nul
+
+# Google Drive shortcuts
+*.gsheet
+*.gdoc
+*.gslides
