@@ -1042,7 +1042,11 @@ function clearReportData(dashboard) {
   const lastRow = dashboard.getLastRow();
 
   if (lastRow > tableHeaderRow) {
+    // Clear all data and formatting from table area (including Column A dates)
     dashboard.getRange(tableHeaderRow + 1, 1, lastRow - tableHeaderRow, 14).clearContent().clearFormat();
+
+    // Additionally, explicitly clear Column A to remove any leftover dates
+    dashboard.getRange(tableHeaderRow + 1, 1, lastRow - tableHeaderRow, 1).clearContent();
   }
 }
 
@@ -1177,17 +1181,23 @@ function displayStudentReport(dashboard, studentMap) {
 
       dashboard.getRange(currentRow, 1, 1, 14).setValues([rowData]);
 
+      // Set alignment for all cells: Middle + Center + Wrap
+      dashboard.getRange(currentRow, 1, 1, 14)
+        .setVerticalAlignment('middle')
+        .setHorizontalAlignment('center')
+        .setWrap(true)
+        .setFontSize(8);
+
       // Merge H-M for Feedback (6 columns, expanded from 5)
       dashboard.getRange(currentRow, 8, 1, 6).merge()
         .setValue(session.feedback || '')
         .setFontSize(7)
         .setWrap(true)
-        .setVerticalAlignment('top')
+        .setVerticalAlignment('middle')
         .setHorizontalAlignment('left');
 
       dashboard.getRange(currentRow, 4).setNumberFormat('#,##0.0');
       dashboard.getRange(currentRow, 5).setNumberFormat('#,##0.0');
-      dashboard.getRange(currentRow, 1, 1, 14).setFontSize(8);
 
       // Conditional Formatting for Status (Column N)
       if (session.status === '✅') {
@@ -1345,7 +1355,7 @@ function displayTutorReport(dashboard, tutorMap) {
           studentName: studentName,
           durationSum: totalHrs,
           amount: totalAmt,
-          status: isPaid ? '✅ จ่าย' : '⏳ รอจบ',
+          status: isPaid ? '✅' : '⏳',  // Show only icon, no text
           rate: totalHrs > 0 ? Math.round(totalAmt / totalHrs) : 0,
           sessions: studentSessions,  // สำหรับ onsiteDay
           courseType: courseType
@@ -1373,10 +1383,15 @@ function displayTutorReport(dashboard, tutorMap) {
 
       dashboard.getRange(currentRow, 1, 1, 14).setValues([summaryRowData]);
 
+      // Set alignment for all cells: Middle + Center + Wrap
+      dashboard.getRange(currentRow, 1, 1, 14)
+        .setVerticalAlignment('middle')
+        .setHorizontalAlignment('center')
+        .setWrap(true)
+        .setFontSize(8);
+
       // H: Course Type
       dashboard.getRange(currentRow, 8)
-        .setHorizontalAlignment('center')
-        .setFontSize(8)
         .setFontWeight('bold');
 
       // I-L: รายละเอียด (merge 4 columns)
@@ -1385,19 +1400,15 @@ function displayTutorReport(dashboard, tutorMap) {
         .setHorizontalAlignment('left')
         .setFontSize(7)
         .setWrap(true)
-        .setVerticalAlignment('top');
+        .setVerticalAlignment('middle');
 
       // M: ชม.รวม
       dashboard.getRange(currentRow, 13)
-        .setHorizontalAlignment('center')
-        .setFontSize(8)
         .setNumberFormat('#,##0.0');
 
       // N: ยอดเงิน
       dashboard.getRange(currentRow, 14)
-        .setNumberFormat('#,##0')
-        .setFontSize(8)
-        .setHorizontalAlignment('center');
+        .setNumberFormat('#,##0');
 
       // Border
       dashboard.getRange(currentRow, 1, 1, 14).setBorder(
@@ -1585,8 +1596,9 @@ function displayTutorReport(dashboard, tutorMap) {
     dashboard.setRowHeight(currentRow, 28);
     currentRow++;
 
-    // Table Headers (Version 8.1: 14 columns)
-    const headers = ['วันที่', 'เวลา', 'นักเรียน', 'วิชา', 'CourseType', 'ชม.', '', '', 'Status', '', '', '', '', ''];
+    // Table Headers (Version 8.3: Restructured layout)
+    // A: วันที่, B: เวลา, C: นักเรียน, D-E: วิชา, F: CourseType, G: ชม., H: ยอดเงิน, I-M: หมายเหตุ, N: Status
+    const headers = ['วันที่', 'เวลา', 'นักเรียน', 'วิชา', '', 'CourseType', 'ชม.', 'ยอดเงิน', '', '', '', '', '', 'Status'];
 
     dashboard.getRange(currentRow, 1, 1, 14)
       .setValues([headers])
@@ -1596,17 +1608,17 @@ function displayTutorReport(dashboard, tutorMap) {
       .setBackground(REPORT_CONFIG.COLORS.tableHeader)
       .setFontColor('#ffffff');
 
-    // Merge G-H for "ยอดเงิน"
-    dashboard.getRange(currentRow, 7, 1, 2).merge()
-      .setValue('ยอดเงิน')
+    // Merge D-E for "วิชา"
+    dashboard.getRange(currentRow, 4, 1, 2).merge()
+      .setValue('วิชา')
       .setFontWeight('bold')
       .setFontSize(8)
       .setHorizontalAlignment('center')
       .setBackground(REPORT_CONFIG.COLORS.tableHeader)
       .setFontColor('#ffffff');
 
-    // Merge J-N for "หมายเหตุ" (5 columns, expanded from 4)
-    dashboard.getRange(currentRow, 10, 1, 5).merge()
+    // Merge I-M for "หมายเหตุ" (5 columns)
+    dashboard.getRange(currentRow, 9, 1, 5).merge()
       .setValue('หมายเหตุ')
       .setFontWeight('bold')
       .setFontSize(8)
@@ -1617,7 +1629,7 @@ function displayTutorReport(dashboard, tutorMap) {
     dashboard.setRowHeight(currentRow, 22);
     currentRow++;
 
-    // Sessions (Version 8.1: 14 columns)
+    // Sessions (Version 8.3: Restructured layout)
     data.sessions.forEach(session => {
       const dateStr = formatDateString(session.date);
 
@@ -1625,37 +1637,45 @@ function displayTutorReport(dashboard, tutorMap) {
         dateStr,                    // A: วันที่
         session.time || '',         // B: เวลา
         session.student || '',      // C: นักเรียน
-        session.subject || '',      // D: วิชา
-        session.courseType || '',   // E: CourseType
-        session.duration,           // F: ชม.
-        '', '',                     // G-H: ยอดเงิน (will merge)
-        session.status,             // I: Status
-        '', '', '', '', ''          // J-N: หมายเหตุ (will merge, 5 columns)
+        session.subject || '',      // D: วิชา (will merge D-E)
+        '',                         // E: (merged with D)
+        session.courseType || '',   // F: CourseType
+        session.duration,           // G: ชม.
+        session.amount,             // H: ยอดเงิน
+        '', '', '', '', '',         // I-M: หมายเหตุ (will merge, 5 columns)
+        session.status              // N: Status
       ];
 
       dashboard.getRange(currentRow, 1, 1, 14).setValues([rowData]);
 
-      // Merge G-H for ยอดเงิน
-      dashboard.getRange(currentRow, 7, 1, 2).merge()
-        .setValue(session.amount)
-        .setNumberFormat('#,##0')
-        .setFontSize(8)
-        .setHorizontalAlignment('center');
+      // Set alignment for all cells: Middle + Center + Wrap
+      dashboard.getRange(currentRow, 1, 1, 14)
+        .setVerticalAlignment('middle')
+        .setHorizontalAlignment('center')
+        .setWrap(true)
+        .setFontSize(8);
 
-      // Merge J-N for หมายเหตุ (5 columns, ว่างไว้ให้กรอก)
-      dashboard.getRange(currentRow, 10, 1, 5).merge()
+      // Merge D-E for วิชา
+      dashboard.getRange(currentRow, 4, 1, 2).merge()
+        .setValue(session.subject || '')
+        .setHorizontalAlignment('center')
+        .setVerticalAlignment('middle');
+
+      // Merge I-M for หมายเหตุ (5 columns, ว่างไว้ให้กรอก)
+      dashboard.getRange(currentRow, 9, 1, 5).merge()
         .setValue('')
-        .setFontSize(8)
-        .setHorizontalAlignment('left');
+        .setHorizontalAlignment('left')
+        .setVerticalAlignment('middle');
 
-      dashboard.getRange(currentRow, 6).setNumberFormat('#,##0.0');  // ชม.
-      dashboard.getRange(currentRow, 1, 1, 14).setFontSize(8);
+      // Number formats
+      dashboard.getRange(currentRow, 7).setNumberFormat('#,##0.0');  // ชม.
+      dashboard.getRange(currentRow, 8).setNumberFormat('#,##0');    // ยอดเงิน
 
-      // Conditional Formatting for Status (Column I)
+      // Conditional Formatting for Status (Column N)
       if (session.status === '✅') {
-        dashboard.getRange(currentRow, 9).setBackground(REPORT_CONFIG.COLORS.statusOK);
+        dashboard.getRange(currentRow, 14).setBackground(REPORT_CONFIG.COLORS.statusOK);
       } else {
-        dashboard.getRange(currentRow, 9).setBackground(REPORT_CONFIG.COLORS.statusPending);
+        dashboard.getRange(currentRow, 14).setBackground(REPORT_CONFIG.COLORS.statusPending);
       }
 
       currentRow++;
