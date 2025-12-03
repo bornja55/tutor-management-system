@@ -1062,10 +1062,16 @@ function displayStudentReport(dashboard, studentMap) {
       ];
       
       dashboard.getRange(currentRow, 1, 1, 12).setValues([rowData]);
+
+      // Set alignment for all cells: Middle + Center + Wrap
+      dashboard.getRange(currentRow, 1, 1, 12)
+        .setVerticalAlignment('middle')
+        .setHorizontalAlignment('center')
+        .setWrap(true)
+        .setFontSize(8);
+
       dashboard.getRange(currentRow, 4).setNumberFormat('#,##0.0');
       dashboard.getRange(currentRow, 5).setNumberFormat('#,##0.0');
-      dashboard.getRange(currentRow, 1, 1, 12).setFontSize(8);
-      dashboard.getRange(currentRow, 8).setWrap(true);
       
       // Conditional Formatting
       if (session.status === '✅') {
@@ -1139,11 +1145,18 @@ function displayTutorReport(dashboard, tutorMap) {
       ];
       
       dashboard.getRange(currentRow, 1, 1, 12).setValues([rowData]);
+
+      // Set alignment for all cells: Middle + Center + Wrap
+      dashboard.getRange(currentRow, 1, 1, 12)
+        .setVerticalAlignment('middle')
+        .setHorizontalAlignment('center')
+        .setWrap(true)
+        .setFontSize(8);
+
       dashboard.getRange(currentRow, 4).setNumberFormat('#,##0.0');
       dashboard.getRange(currentRow, 5).setNumberFormat('#,##0.0');
       dashboard.getRange(currentRow, 6).setNumberFormat('#,##0.0');
       dashboard.getRange(currentRow, 8).setNumberFormat('#,##0');
-      dashboard.getRange(currentRow, 1, 1, 12).setFontSize(8);
       
       // Conditional Formatting
       if (session.status === '✅') {

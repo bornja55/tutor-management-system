@@ -971,10 +971,15 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
 
       dashboard.getRange(currentRow, 1, 1, 14).setValues([summaryRowData]);
 
+      // Set alignment for all cells: Middle + Center + Wrap
+      dashboard.getRange(currentRow, 1, 1, 14)
+        .setVerticalAlignment('middle')
+        .setHorizontalAlignment('center')
+        .setWrap(true)
+        .setFontSize(8);
+
       // H: Course Type
       dashboard.getRange(currentRow, 8)
-        .setHorizontalAlignment('center')
-        .setFontSize(8)
         .setFontWeight('bold');
 
       // I-L: รายละเอียด (merge 4 columns)
@@ -983,19 +988,15 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
         .setHorizontalAlignment('left')
         .setFontSize(7)
         .setWrap(true)
-        .setVerticalAlignment('top');
+        .setVerticalAlignment('middle');
 
       // M: ชม.รวม
       dashboard.getRange(currentRow, 13)
-        .setHorizontalAlignment('center')
-        .setFontSize(8)
         .setNumberFormat('#,##0.0');
 
       // N: ยอดเงิน
       dashboard.getRange(currentRow, 14)
-        .setNumberFormat('#,##0')
-        .setFontSize(8)
-        .setHorizontalAlignment('center');
+        .setNumberFormat('#,##0');
 
       // Border
       dashboard.getRange(currentRow, 1, 1, 14).setBorder(

@@ -944,7 +944,7 @@ function groupByTutor(filteredData, tutorLookup) {
       }
 
       // Add sessions to tutor's session list
-      studentData.sessions.forEach(session => {
+      studentData.sessions.forEach((session, sessionIndex) => {
         tutorData.sessions.push({
           date: session.date,
           time: session.time,
@@ -954,10 +954,13 @@ function groupByTutor(filteredData, tutorLookup) {
           totalHours: totalHours,
           remaining: remaining,
           courseType: courseType,
-          amount: shouldPay ? amount / studentData.sessions.length : 0,  // Distribute amount across sessions
+          amount: sessionIndex === 0 ? amount : 0,  // แสดงยอดเงินที่ session แรกเท่านั้น
           rate: paymentResult.rate,
           shouldPay: shouldPay,
-          status: shouldPay ? '✅' : '⏳'
+          status: shouldPay ? '✅' : '⏳',
+          topic: session.subject || '',  // เก็บ topic ไว้ใช้ในหมายเหตุ
+          studentTotalHours: totalHours,
+          studentRemaining: remaining
         });
       });
     });
@@ -1661,11 +1664,14 @@ function displayTutorReport(dashboard, tutorMap) {
         .setHorizontalAlignment('center')
         .setVerticalAlignment('middle');
 
-      // Merge I-M for หมายเหตุ (5 columns, ว่างไว้ให้กรอก)
+      // Merge I-M for หมายเหตุ (5 columns)
+      // Format: "Topic | Total Hours | Remaining Hours"
+      const noteText = `${session.topic || session.subject || ''} | ${session.studentTotalHours || 0} | ${session.studentRemaining || 0}`;
       dashboard.getRange(currentRow, 9, 1, 5).merge()
-        .setValue('')
+        .setValue(noteText)
         .setHorizontalAlignment('left')
-        .setVerticalAlignment('middle');
+        .setVerticalAlignment('middle')
+        .setFontSize(7);
 
       // Number formats
       dashboard.getRange(currentRow, 7).setNumberFormat('#,##0.0');  // ชม.
