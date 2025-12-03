@@ -1,7 +1,7 @@
 # 📚 English Mania - ระบบบันทึกและรายงานผลการสอนอัตโนมัติ
 
-> **Last Updated:** 28 พฤศจิกายน 2568
-> **Version:** 7.2
+> **Last Updated:** 3 ธันวาคม 2568
+> **Version:** 8.3
 > **Status:** 🟢 Active
 
 ---
@@ -218,6 +218,52 @@
 ---
 
 ## 📝 Change Log
+
+### **Version 8.3** (3 ธันวาคม 2568) - 🎨 UI/UX Enhancement & Bug Fixes
+
+**🎯 Major Changes:**
+
+- ✅ **Dashboard Report (Tutor) Improvements:**
+  - แก้ไขการคำนวณยอดเงิน: แสดงยอดเต็มที่ session แรก (ไม่แบ่งเฉลี่ยอีกต่อไป)
+  - เพิ่มข้อมูลในหมายเหตุ: รูปแบบ `Topic | Total Hours | Remaining Hours`
+  - Restructure detail table columns:
+    - D-E: วิชา (merged)
+    - F: CourseType
+    - G: ชม.
+    - H: ยอดเงิน (unmerged)
+    - I-M: หมายเหตุ (5 columns)
+    - N: Status (ย้ายจาก column I)
+  - Status column: แสดงแค่ icon (✅/⏳) ไม่มี text
+
+- ✅ **Cell Formatting ทุก Dashboard:**
+  - ตั้งค่า Middle + Center + Wrap text ในทุก cell ของตาราง
+  - ใช้กับ Dashboard Payment, Dashboard Report, และ Dashboard Student
+  - ทั้งตารางสรุปและตารางรายละเอียด
+
+- ✅ **Code Refactoring:**
+  - ย้าย shared functions ไปยัง `utils shared.gs`:
+    - `createSummaryDetailsText()`
+    - `groupStudentsByCourseType()`
+    - `createTutorTotalSummary()`
+    - `createTutorTotalSummaryFromSessions()`
+    - `groupOnsiteDayByDate()`
+  - ลบ duplicate functions จาก dashboard files
+  - ปรับปรุงโครงสร้างโค้ดให้สะอาดและบำรุงรักษาง่ายขึ้น
+
+**🐛 Bug Fixes:**
+
+- ✅ **Fixed ReferenceError:** แก้ไข malformed 'n' character จาก sed command artifacts
+- ✅ **Fixed Column A clearing:** เพิ่ม explicit clear เพื่อลบวันที่เก่าออกจากรายงาน
+- ✅ **Fixed Payment Calculation:** แก้ปัญหายอดเงินถูกแบ่งเฉลี่ยผิดพลาด
+
+**🔧 Technical Details:**
+
+- Extended layout to 14 columns (A-N) ในทุก dashboard
+- Improved table summary with merged cells และ border styling
+- Added table header alignment และ wrap text support
+- Version bumped from 7.5 → 8.3
+
+---
 
 ### **Version 7.2** (28 พฤศจิกายน 2568) - 💰 Payment-First Design
 
