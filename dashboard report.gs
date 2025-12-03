@@ -1665,7 +1665,8 @@ function displayTutorReport(dashboard, tutorMap) {
     currentRow++;
   });
 }
-n// ============================================================
+
+// ============================================================
 // NOTE: Shared functions moved to utils shared.gs
 // - createTutorTotalSummaryFromSessions()
 // ============================================================
