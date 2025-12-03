@@ -1458,7 +1458,7 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
   );
 }
 
-n// ============================================================
+// ============================================================
 // NOTE: Shared functions moved to utils shared.gs
 // - createSummaryDetailsText()
 // - groupStudentsByCourseType()
