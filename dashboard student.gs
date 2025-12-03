@@ -235,7 +235,26 @@ function setupDashboardReport() {
   dashboard.setColumnWidth(13, 65);  // M
   
   dashboard.setFrozenRows(23);
-  
+
+  // ============================================================
+  // SET DEFAULT FILTER: เลือกทั้งหมด
+  // ============================================================
+  // ปี: เลือกทั้งหมด (C5, E5)
+  dashboard.getRange('C5').setValue(true);  // 2025
+  dashboard.getRange('E5').setValue(true);  // 2026
+
+  // รอบ: เลือกทั้งหมด (H5, J5)
+  dashboard.getRange('H5').setValue(true);  // 1-15
+  dashboard.getRange('J5').setValue(true);  // 16-31
+
+  // เดือน: เลือกทั้งหมด (B8-M8 = 12 checkboxes)
+  for (let i = 2; i <= 13; i++) {
+    dashboard.getRange(8, i).setValue(true);  // B8-M8
+  }
+
+  // นักเรียน: เลือกทั้งหมด (B10 checkbox "ทั้งหมด")
+  dashboard.getRange('B10').setValue(true);  // Checkbox "ทั้งหมด"
+
   SpreadsheetApp.getActiveSpreadsheet().toast(
     '✅ Setup Dashboard Report สำเร็จ!\n\n' +
     'ขั้นตอนการใช้งาน:\n' +

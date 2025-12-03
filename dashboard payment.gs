@@ -156,6 +156,21 @@ function setupDashboardPayment() {
 
   // NOTE: setFrozenRows จะถูกเรียกใน updateTutorCheckboxesPayment() แบบ dynamic
 
+  // ============================================================
+  // SET DEFAULT FILTER: เลือกทั้งหมด
+  // ============================================================
+  // ปี: เลือกทั้งหมด (B3 checkbox "ทั้งหมด")
+  dashboard.getRange('B3').setValue(true);  // Checkbox "ทั้งหมด"
+
+  // รอบ: เลือกทั้งหมด (I3 checkbox "ทั้งหมด")
+  dashboard.getRange('I3').setValue(true);  // Checkbox "ทั้งหมด"
+
+  // เดือน: เลือกทั้งหมด (B6 checkbox "ทั้งหมด")
+  dashboard.getRange('B6').setValue(true);  // Checkbox "ทั้งหมด"
+
+  // ติวเตอร์: เลือกทั้งหมด (B9 checkbox "ทั้งหมด")
+  dashboard.getRange('B9').setValue(true);  // Checkbox "ทั้งหมด"
+
   SpreadsheetApp.getActiveSpreadsheet().toast(
     '✅ Setup Dashboard Payment สำเร็จ!\n\n' +
     'ขั้นตอนการใช้งาน:\n' +

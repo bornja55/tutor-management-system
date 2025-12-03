@@ -166,6 +166,24 @@ function setupDashboardReport() {
 
   // NOTE: setFrozenRows จะถูกเรียกใน updateReportCheckboxes() แบบ dynamic
 
+  // ============================================================
+  // SET DEFAULT FILTER: เลือกทั้งหมด
+  // ============================================================
+  // ปี: เลือกทั้งหมด (B2 checkbox "ทั้งหมด")
+  dashboard.getRange('B2').setValue(true);  // Checkbox "ทั้งหมด"
+
+  // รอบ: เลือกทั้งหมด (I2 checkbox "ทั้งหมด")
+  dashboard.getRange('I2').setValue(true);  // Checkbox "ทั้งหมด"
+
+  // เดือน: เลือกทั้งหมด (B4 checkbox "ทั้งหมด")
+  dashboard.getRange('B4').setValue(true);  // Checkbox "ทั้งหมด"
+
+  // นักเรียน: เลือกทั้งหมด (B5 checkbox "ทั้งหมด")
+  dashboard.getRange('B5').setValue(true);  // Checkbox "ทั้งหมด"
+
+  // ติวเตอร์: เลือกทั้งหมด (B8 checkbox "ทั้งหมด")
+  dashboard.getRange('B8').setValue(true);  // Checkbox "ทั้งหมด"
+
   SpreadsheetApp.getActiveSpreadsheet().toast(
     '✅ Setup Dashboard Report สำเร็จ!\n\n' +
     'ขั้นตอนการใช้งาน:\n' +
