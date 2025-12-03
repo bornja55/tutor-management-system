@@ -1665,36 +1665,9 @@ function displayTutorReport(dashboard, tutorMap) {
     currentRow++;
   });
 }
-
+n// ============================================================
+// NOTE: Shared functions moved to utils shared.gs
+// - createTutorTotalSummaryFromSessions()
 // ============================================================
-// 📊 CREATE TUTOR TOTAL SUMMARY FROM SESSIONS
-// สร้างข้อความสรุปสำหรับแถว **รวม** จาก courseTypeGroups ที่มี sessions
-// Format: "online1by1: สอนจบ 3 คอร์ส | onsiteDay: สอน 5 วัน"
-// ============================================================
-function createTutorTotalSummaryFromSessions(courseTypeGroups) {
-  const summaries = [];
 
-  courseTypeGroups.forEach((group, courseType) => {
-    const sessions = group.sessions || [];
-
-    if (courseType === 'onsiteDay') {
-      // สำหรับ onsiteDay: นับจำนวนวันที่ไม่ซ้ำ
-      const uniqueDates = new Set();
-      sessions.forEach(session => {
-        uniqueDates.add(formatDateString(session.date));
-      });
-      if (uniqueDates.size > 0) {
-        summaries.push(`${courseType}: สอน ${uniqueDates.size} วัน`);
-      }
-    } else {
-      // สำหรับ courseType อื่นๆ: นับจำนวน sessions ที่มี amount > 0 (จ่ายแล้ว)
-      const paidSessions = sessions.filter(s => (s.amount || 0) > 0).length;
-      if (paidSessions > 0) {
-        summaries.push(`${courseType}: สอนจบ ${paidSessions} คอร์ส`);
-      }
-    }
-  });
-
-  return summaries.join(' | ');
-}
 
