@@ -875,3 +875,178 @@ function getDayOfWeek(date) {
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   return days[date.getDay()];
 }
+
+// ============================================================
+// SHARED DISPLAY FUNCTIONS (Used by both Dashboard Payment & Report)
+// ============================================================
+
+/**
+ * CREATE SUMMARY DETAILS TEXT
+ * สร้างข้อความสรุปรายละเอียดแบบย่อสำหรับแต่ละติวเตอร์
+ */
+function createSummaryDetailsText(studentDetails, courseType) {
+  const lines = [];
+  
+  if (courseType === "onsiteDay") {
+    const dateGroups = groupOnsiteDayByDate(studentDetails);
+    dateGroups.forEach((dateGroup, dateKey) => {
+      const studentsText = dateGroup.students
+        .map(s => s.name + "(" + s.hours.toFixed(1) + ")")
+        .join(" ");
+      lines.push(dateKey + " " + studentsText);
+    });
+    return lines.join("\n");
+  }
+  
+  const paidStudents = [];
+  const pendingStudents = [];
+  
+  studentDetails.forEach(studentData => {
+    const studentName = studentData.studentName;
+    const rate = studentData.rate || 0;
+    const hoursUsed = studentData.durationSum || 0;
+    const amount = studentData.amount || 0;
+    
+    if (studentData.status === "✅ จ่าย") {
+      const detail = studentName + " " + rate + "×" + hoursUsed.toFixed(1) + "=" + amount.toLocaleString("th-TH");
+      paidStudents.push(detail);
+    } else {
+      const detail = studentName + " " + hoursUsed.toFixed(1) + "ชม. (รอจบคอร์ส)";
+      pendingStudents.push(detail);
+    }
+  });
+  
+  if (paidStudents.length > 0) {
+    lines.push(...paidStudents);
+  }
+  if (pendingStudents.length > 0) {
+    if (paidStudents.length > 0) lines.push("---");
+    lines.push(...pendingStudents);
+  }
+  
+  return lines.join("\n");
+}
+
+
+/**
+ * GROUP STUDENTS BY COURSE TYPE
+ * จัดกลุ่ม students ตาม courseType พร้อมเรียงลำดับ
+ */
+function groupStudentsByCourseType(students) {
+  const grouped = new Map();
+  const courseTypeOrder = ["online1by1", "onsite1by1", "onsiteGroup", "onsiteDay"];
+  
+  students.forEach((studentData, key) => {
+    const courseType = studentData.courseType;
+    if (!grouped.has(courseType)) {
+      grouped.set(courseType, {
+        courseType: courseType,
+        students: [],
+        totalHours: 0,
+        totalAmount: 0
+      });
+    }
+    const group = grouped.get(courseType);
+    group.students.push(studentData);
+    group.totalHours += studentData.durationSum;
+    group.totalAmount += studentData.amount;
+  });
+  
+  const sorted = new Map();
+  courseTypeOrder.forEach(type => {
+    if (grouped.has(type)) sorted.set(type, grouped.get(type));
+  });
+  return sorted;
+}
+
+
+/**
+ * GROUP ONSITEDAY BY DATE
+ * จัดกลุ่ม onsiteDay sessions ตามวันที่
+ */
+function groupOnsiteDayByDate(students) {
+  const dateGroups = new Map();
+  students.forEach(studentData => {
+    if (studentData.courseType !== "onsiteDay") return;
+    studentData.sessions.forEach(session => {
+      const dateKey = formatDateString(session.date);
+      if (!dateGroups.has(dateKey)) {
+        dateGroups.set(dateKey, {
+          date: session.date,
+          dateStr: dateKey,
+          students: [],
+          totalHours: 0,
+          totalAmount: 0,
+          isPaid: false
+        });
+      }
+      const dateGroup = dateGroups.get(dateKey);
+      dateGroup.students.push({ name: studentData.studentName, hours: session.duration });
+      dateGroup.totalHours += session.duration;
+      if (studentData.status === "✅ จ่าย" && !dateGroup.isPaid) {
+        dateGroup.totalAmount = 850;
+        dateGroup.isPaid = true;
+      }
+    });
+  });
+  Logger.log("📅 groupOnsiteDayByDate found " + dateGroups.size + " days");
+  return dateGroups;
+}
+
+
+/**
+ * CREATE TUTOR TOTAL SUMMARY
+ * สร้างข้อความสรุปสำหรับแถว **รวม** (Dashboard Payment style)
+ * Format: "online1by1: สอนจบ 3 คอร์ส | onsiteDay: สอน 5 วัน"
+ */
+function createTutorTotalSummary(courseTypeGroups) {
+  const summaries = [];
+  courseTypeGroups.forEach((group, courseType) => {
+    const students = group.students || [];
+    if (courseType === "onsiteDay") {
+      const uniqueDates = new Set();
+      students.forEach(studentData => {
+        if (studentData.sessions) {
+          studentData.sessions.forEach(session => {
+            uniqueDates.add(formatDateString(session.date));
+          });
+        }
+      });
+      if (uniqueDates.size > 0) {
+        summaries.push(courseType + ": สอน " + uniqueDates.size + " วัน");
+      }
+    } else {
+      const paidCourses = students.filter(s => s.status === "✅ จ่าย").length;
+      if (paidCourses > 0) {
+        summaries.push(courseType + ": สอนจบ " + paidCourses + " คอร์ส");
+      }
+    }
+  });
+  return summaries.join(" | ");
+}
+
+
+/**
+ * CREATE TUTOR TOTAL SUMMARY FROM SESSIONS  
+ * สร้างข้อความสรุปจาก courseTypeGroups ที่มี sessions (Dashboard Report style)
+ */
+function createTutorTotalSummaryFromSessions(courseTypeGroups) {
+  const summaries = [];
+  courseTypeGroups.forEach((group, courseType) => {
+    const sessions = group.sessions || [];
+    if (courseType === "onsiteDay") {
+      const uniqueDates = new Set();
+      sessions.forEach(session => uniqueDates.add(formatDateString(session.date)));
+      if (uniqueDates.size > 0) {
+        summaries.push(courseType + ": สอน " + uniqueDates.size + " วัน");
+      }
+    } else {
+      const paidSessions = sessions.filter(s => (s.amount || 0) > 0).length;
+      if (paidSessions > 0) {
+        summaries.push(courseType + ": สอนจบ " + paidSessions + " คอร์ส");
+      }
+    }
+  });
+  return summaries.join(" | ");
+}
+

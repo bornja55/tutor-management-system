@@ -265,8 +265,8 @@ function updateReportCheckboxes() {
   // Display Student Checkboxes (Row 6-7, updated from 10-11)
   const studentRowsUsed = displayCheckboxRow(dashboard, students, 6, 7, '#fffde7');
 
-  // Calculate tutor start row (หลังจากนักเรียน + 1 แถวว่าง เพื่อไม่ให้ทับกัน - ลด gap)
-  const tutorStartRow = 6 + studentRowsUsed + 1;
+  // Calculate tutor start row (หลังจากนักเรียน - ไม่มี gap)
+  const tutorStartRow = 6 + studentRowsUsed;
 
   // Setup Tutor Header ใหม่
   dashboard.getRange(tutorStartRow, 1).setValue('👨‍🏫 ติวเตอร์').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.tutor);
@@ -479,14 +479,14 @@ function saveTutorDisplayToLineIdMappingReport(dashboard, tutorLineIdMap) {
   tutorLineIdMap.forEach((info, lineId) => {
     mapping[info.displayName] = lineId;
   });
-  // เก็บใน cell ที่ซ่อน (AA1) และตั้งค่าสีฟอนต์เป็นสีขาว
-  dashboard.getRange('AA1')
+  // เก็บใน cell N5 (แถว student checkbox) และตั้งค่าสีฟอนต์เป็นสีขาว
+  dashboard.getRange('N5')
     .setValue(JSON.stringify(mapping))
     .setFontColor('#ffffff');
 }
 
 function loadTutorDisplayToLineIdMappingReport(dashboard) {
-  const jsonString = dashboard.getRange('AA1').getValue();
+  const jsonString = dashboard.getRange('N5').getValue();
   if (!jsonString) return {};
   try {
     return JSON.parse(jsonString);
@@ -812,18 +812,40 @@ function groupByTutor(filteredData, tutorLookup) {
         displayName: latestDisplayName,  // ใช้ Display Name ล่าสุด
         fullName: fullName,
         students: new Map(),  // Changed to Map for student grouping
-        sessions: []
+        sessions: [],
+        tutorRules: null  // เพิ่ม: เก็บ Payment Rules
       });
     }
 
     const tutorData = tutorMap.get(lineIdStr);
 
-    // Group by student
-    const studentKey = `${student}|${courseType}`;
+    // ประมวลผล Payment Conditions ก่อน Grouping (เหมือน Dashboard Payment)
+    let effectiveCourseType = courseType;
+
+    // โหลด Payment Rules ชั่วคราวเพื่อเช็ค conditions
+    if (!tutorData.tutorRules) {
+      tutorData.tutorRules = getTutorPaymentRules(lineIdStr);
+    }
+
+    const rules = tutorData.tutorRules.get(courseType);
+    if (rules && rules.conditions) {
+      const tempSession = {
+        date: date,
+        courseType: courseType
+      };
+      const conditionResult = applyPaymentConditions(rules.conditions, tempSession, tutorData.tutorRules);
+      if (conditionResult.switchTo) {
+        effectiveCourseType = conditionResult.switchTo;
+        Logger.log(`🔄 Apply condition: ${student} on ${formatDateString(date)} switched from ${courseType} to ${effectiveCourseType}`);
+      }
+    }
+
+    // Group by student (ใช้ effectiveCourseType แทน courseType)
+    const studentKey = `${student}|${effectiveCourseType}`;
     if (!tutorData.students.has(studentKey)) {
       tutorData.students.set(studentKey, {
         studentName: student,
-        courseType: courseType,
+        courseType: effectiveCourseType,
         sessions: [],
         durationSum: 0,
         totalHours: totalHours,
@@ -837,12 +859,12 @@ function groupByTutor(filteredData, tutorLookup) {
       time: time,
       subject: subject,
       duration: duration,
-      courseType: courseType
+      courseType: effectiveCourseType  // ใช้ effectiveCourseType
     });
     studentData.durationSum += duration;
     studentData.remaining = remaining;
     studentData.totalHours = totalHours;
-    studentData.courseType = courseType;
+    studentData.courseType = effectiveCourseType;  // ใช้ effectiveCourseType
   });
 
   // ============================================================
@@ -863,8 +885,9 @@ function groupByTutor(filteredData, tutorLookup) {
       });
     });
 
-    // Track onsiteDay payment per day
-    const onsiteDayPaymentProcessed = new Set();
+    // ✅ แก้ไข: คำนวณจำนวนวันที่ต้องจ่ายเงิน onsiteDay ก่อน (จ่ายครั้งเดียวต่อวัน)
+    const onsiteDayPaymentAmount = onsiteDayDates.size * 850;  // 850 บาท/วัน
+    let onsiteDayAmountDistributed = 0;  // ยอดเงินที่แจกจ่ายไปแล้ว
 
     // Process each student course
     tutorData.students.forEach((studentData, key) => {
@@ -901,24 +924,19 @@ function groupByTutor(filteredData, tutorLookup) {
       let shouldPay = paymentResult.shouldPay;
 
       if (paymentResult.shouldPay) {
-        // Handle onsiteDay: pay once per day, not per course
+        // ✅ แก้ไข: สำหรับ onsiteDay แจกจ่ายเงินให้นักเรียนคนแรก
         if (courseType === 'onsiteDay') {
-          const sessionDates = studentData.sessions.map(s => formatDateString(s.date));
-          let dayPaid = false;
-
-          sessionDates.forEach(dateStr => {
-            if (!onsiteDayPaymentProcessed.has(dateStr)) {
-              if (!dayPaid) {
-                amount += paymentResult.amount;  // Pay for this day
-                onsiteDayPaymentProcessed.add(dateStr);
-                dayPaid = true;
-              }
-            }
-          });
-
-          // If all days already paid, mark as not payable
-          if (amount === 0) {
+          if (onsiteDayAmountDistributed === 0) {
+            // นักเรียนคนแรกที่เป็น onsiteDay รับเงินทั้งหมด
+            amount = onsiteDayPaymentAmount;
+            onsiteDayAmountDistributed = amount;
+            shouldPay = true;
+            Logger.log(`  ✅ onsiteDay payment (${onsiteDayDates.size} days): ${amount} บาท for ${studentData.studentName}`);
+          } else {
+            // นักเรียนคนอื่นๆ แสดงว่ารวมในยอดแล้ว
+            amount = 0;
             shouldPay = false;
+            Logger.log(`  ⏭️  onsiteDay for ${studentData.studentName}: included in day rate`);
           }
         } else {
           amount = paymentResult.amount;
@@ -1024,7 +1042,7 @@ function clearReportData(dashboard) {
   const lastRow = dashboard.getLastRow();
 
   if (lastRow > tableHeaderRow) {
-    dashboard.getRange(tableHeaderRow + 1, 1, lastRow - tableHeaderRow, 13).clearContent().clearFormat();
+    dashboard.getRange(tableHeaderRow + 1, 1, lastRow - tableHeaderRow, 14).clearContent().clearFormat();
   }
 }
 
@@ -1312,25 +1330,34 @@ function displayTutorReport(dashboard, tutorMap) {
     });
 
     // สร้างข้อความสรุปรายละเอียดสำหรับแต่ละ courseType
+    // ใช้ฟังก์ชันเดียวกับ Dashboard Payment
     courseTypeGroups.forEach((group, courseType) => {
       const students = Array.from(group.students);
-      const summaryText = students
-        .map(s => {
-          const studentSessions = group.sessions.filter(sess => sess.student === s);
-          const totalHrs = studentSessions.reduce((sum, sess) => sum + sess.duration, 0);
-          const totalAmt = studentSessions.reduce((sum, sess) => sum + sess.amount, 0);
-          const isPaid = studentSessions.some(sess => sess.shouldPay);
 
-          if (isPaid) {
-            return `${s} ${totalHrs.toFixed(1)}ชม.=${totalAmt.toLocaleString()}฿`;
-          } else {
-            return `${s} ${totalHrs.toFixed(1)}ชม. (รอจบคอร์ส)`;
-          }
-        })
-        .join(', ');
+      // แปลง sessions เป็นรูปแบบที่ createSummaryDetailsText() ต้องการ
+      const studentDetails = students.map(studentName => {
+        const studentSessions = group.sessions.filter(sess => sess.student === studentName);
+        const totalHrs = studentSessions.reduce((sum, sess) => sum + sess.duration, 0);
+        const totalAmt = studentSessions.reduce((sum, sess) => sum + sess.amount, 0);
+        const isPaid = studentSessions.some(sess => sess.shouldPay);
 
-      group.summaryText = summaryText;
+        return {
+          studentName: studentName,
+          durationSum: totalHrs,
+          amount: totalAmt,
+          status: isPaid ? '✅ จ่าย' : '⏳ รอจบ',
+          rate: totalHrs > 0 ? Math.round(totalAmt / totalHrs) : 0,
+          sessions: studentSessions,  // สำหรับ onsiteDay
+          courseType: courseType
+        };
+      });
+
+      // ใช้ฟังก์ชัน createSummaryDetailsText() จาก Dashboard Payment
+      group.summaryText = createSummaryDetailsText(studentDetails, courseType);
     });
+
+    const startRowForTutor = currentRow;
+    let rowsForTutor = 0;
 
     // แสดงแต่ละ courseType เป็นแถวแยก
     courseTypeGroups.forEach((group, courseType) => {
@@ -1345,24 +1372,6 @@ function displayTutorReport(dashboard, tutorMap) {
       ];
 
       dashboard.getRange(currentRow, 1, 1, 14).setValues([summaryRowData]);
-
-      // A-C: Merge and leave empty (for courseType rows)
-      dashboard.getRange(currentRow, 1, 1, 3).merge()
-        .setValue('')
-        .setHorizontalAlignment('center')
-        .setFontSize(8);
-
-      // D-E: Merge and leave empty (for courseType rows)
-      dashboard.getRange(currentRow, 4, 1, 2).merge()
-        .setValue('')
-        .setHorizontalAlignment('left')
-        .setFontSize(8);
-
-      // F-G: Merge and leave empty (for courseType rows)
-      dashboard.getRange(currentRow, 6, 1, 2).merge()
-        .setValue('')
-        .setHorizontalAlignment('left')
-        .setFontSize(8);
 
       // H: Course Type
       dashboard.getRange(currentRow, 8)
@@ -1399,6 +1408,7 @@ function displayTutorReport(dashboard, tutorMap) {
 
       dashboard.setRowHeight(currentRow, 24);
       currentRow++;
+      rowsForTutor++;
     });
 
     // แถวรวมสำหรับติวเตอร์คนนี้
@@ -1408,52 +1418,34 @@ function displayTutorReport(dashboard, tutorMap) {
     totalHoursOverall += totalDuration;
     totalAmountOverall += totalAmount;
 
+    // สร้างข้อความสรุปสำหรับแถว **รวม**
+    const totalSummaryText = createTutorTotalSummaryFromSessions(courseTypeGroups);
+
     const tutorTotalData = [
-      index + 1,                         // A: #
-      periodText || '',                  // B: รอบวันที่
-      periodShort || '',                 // C: รอบ
-      '', '',                            // D-E: Display Name (will merge)
-      '', '',                            // F-G: ชื่อจริง (will merge)
+      '', '', '',                        // A-C: จะ merge ภายหลัง
+      '', '',                            // D-E: จะ merge ภายหลัง
+      '', '',                            // F-G: จะ merge ภายหลัง
       '**รวม**',                         // H: รวม
-      '', '', '', '',                    // I-L: empty
+      '', '', '', '',                    // I-L: รายละเอียดสรุป (will merge)
       totalDuration || 0,                // M: ชม.รวม
       totalAmount || 0                   // N: ยอดเงิน
     ];
 
     dashboard.getRange(currentRow, 1, 1, 14).setValues([tutorTotalData]);
 
-    // A: #
-    dashboard.getRange(currentRow, 1)
-      .setHorizontalAlignment('center')
-      .setFontSize(8);
-
-    // B: รอบวันที่
-    dashboard.getRange(currentRow, 2)
-      .setHorizontalAlignment('center')
-      .setFontSize(8);
-
-    // C: รอบ
-    dashboard.getRange(currentRow, 3)
-      .setHorizontalAlignment('center')
-      .setFontSize(8);
-
-    // D-E: Display Name (merge)
-    dashboard.getRange(currentRow, 4, 1, 2).merge()
-      .setValue(data.displayName)
-      .setHorizontalAlignment('left')
-      .setFontSize(8);
-
-    // F-G: ชื่อจริง (merge)
-    dashboard.getRange(currentRow, 6, 1, 2).merge()
-      .setValue(data.fullName)
-      .setHorizontalAlignment('left')
-      .setFontSize(8);
-
     // H: รวม (bold)
     dashboard.getRange(currentRow, 8)
       .setHorizontalAlignment('right')
       .setFontSize(9)
       .setFontWeight('bold');
+
+    // I-L: รายละเอียดสรุป (merge 4 columns)
+    dashboard.getRange(currentRow, 9, 1, 4).merge()
+      .setValue(totalSummaryText)
+      .setHorizontalAlignment('left')
+      .setFontSize(7)
+      .setWrap(true)
+      .setVerticalAlignment('middle');
 
     // M: ชม.รวม (bold)
     dashboard.getRange(currentRow, 13)
@@ -1481,6 +1473,45 @@ function displayTutorReport(dashboard, tutorMap) {
 
     dashboard.setRowHeight(currentRow, 26);
     currentRow++;
+    rowsForTutor++;
+
+    // Merge A-G สำหรับทุกแถวของติวเตอร์คนนี้ (เหมือน Dashboard Payment)
+    if (rowsForTutor > 0) {
+      // A: # (merge)
+      dashboard.getRange(startRowForTutor, 1, rowsForTutor, 1).merge()
+        .setValue(index + 1)
+        .setHorizontalAlignment('center')
+        .setVerticalAlignment('middle')
+        .setFontSize(8);
+
+      // B: รอบวันที่ (merge)
+      dashboard.getRange(startRowForTutor, 2, rowsForTutor, 1).merge()
+        .setValue(periodText)
+        .setHorizontalAlignment('center')
+        .setVerticalAlignment('middle')
+        .setFontSize(8);
+
+      // C: รอบ (merge)
+      dashboard.getRange(startRowForTutor, 3, rowsForTutor, 1).merge()
+        .setValue(periodShort)
+        .setHorizontalAlignment('center')
+        .setVerticalAlignment('middle')
+        .setFontSize(8);
+
+      // D-E: Display Name (merge)
+      dashboard.getRange(startRowForTutor, 4, rowsForTutor, 2).merge()
+        .setValue(data.displayName)
+        .setHorizontalAlignment('left')
+        .setVerticalAlignment('middle')
+        .setFontSize(8);
+
+      // F-G: ชื่อจริง (merge)
+      dashboard.getRange(startRowForTutor, 6, rowsForTutor, 2).merge()
+        .setValue(data.fullName)
+        .setHorizontalAlignment('left')
+        .setVerticalAlignment('middle')
+        .setFontSize(8);
+    }
   });
 
   // Overall Total Row
@@ -1518,8 +1549,7 @@ function displayTutorReport(dashboard, tutorMap) {
     .setHorizontalAlignment('center');
 
   dashboard.getRange(currentRow, 1, 1, 14)
-    .setBackground('#fef7e0')
-    .setBorder(true, true, true, true, true, true, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+    .setBackground('#fef7e0');
 
   dashboard.setRowHeight(currentRow, 28);
   currentRow += 2;  // เว้น 1 แถว
@@ -1635,3 +1665,36 @@ function displayTutorReport(dashboard, tutorMap) {
     currentRow++;
   });
 }
+
+// ============================================================
+// 📊 CREATE TUTOR TOTAL SUMMARY FROM SESSIONS
+// สร้างข้อความสรุปสำหรับแถว **รวม** จาก courseTypeGroups ที่มี sessions
+// Format: "online1by1: สอนจบ 3 คอร์ส | onsiteDay: สอน 5 วัน"
+// ============================================================
+function createTutorTotalSummaryFromSessions(courseTypeGroups) {
+  const summaries = [];
+
+  courseTypeGroups.forEach((group, courseType) => {
+    const sessions = group.sessions || [];
+
+    if (courseType === 'onsiteDay') {
+      // สำหรับ onsiteDay: นับจำนวนวันที่ไม่ซ้ำ
+      const uniqueDates = new Set();
+      sessions.forEach(session => {
+        uniqueDates.add(formatDateString(session.date));
+      });
+      if (uniqueDates.size > 0) {
+        summaries.push(`${courseType}: สอน ${uniqueDates.size} วัน`);
+      }
+    } else {
+      // สำหรับ courseType อื่นๆ: นับจำนวน sessions ที่มี amount > 0 (จ่ายแล้ว)
+      const paidSessions = sessions.filter(s => (s.amount || 0) > 0).length;
+      if (paidSessions > 0) {
+        summaries.push(`${courseType}: สอนจบ ${paidSessions} คอร์ส`);
+      }
+    }
+  });
+
+  return summaries.join(' | ');
+}
+

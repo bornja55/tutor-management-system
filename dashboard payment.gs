@@ -394,8 +394,8 @@ function saveTutorDisplayToLineIdMapping(dashboard, tutorLineIdMap) {
 
   const jsonString = JSON.stringify(mapping);
 
-  // เก็บใน cell ที่ซ่อน (AA1) และตั้งค่าสีฟอนต์เป็นสีขาว
-  dashboard.getRange('AA1')
+  // เก็บใน cell N9 (แถว tutor checkbox) และตั้งค่าสีฟอนต์เป็นสีขาว
+  dashboard.getRange('N9')
     .setValue(jsonString)
     .setFontColor('#ffffff');
 }
@@ -404,7 +404,7 @@ function saveTutorDisplayToLineIdMapping(dashboard, tutorLineIdMap) {
 // 📖 LOAD TUTOR DISPLAY-TO-LINEID MAPPING
 // ============================================================
 function loadTutorDisplayToLineIdMapping(dashboard) {
-  const jsonString = dashboard.getRange('AA1').getValue();
+  const jsonString = dashboard.getRange('N9').getValue();
   if (!jsonString) return {};
 
   try {
@@ -691,7 +691,11 @@ function createSummaryWithDetailsPayment(filteredData, tutorLookup) {
     // ขั้นตอนที่ 2: คำนวณเงินสำหรับแต่ละคอร์ส
     // ============================================================
     const studentDetails = [];
-    const onsiteDayPaymentProcessed = new Set();  // เก็บวันที่จ่ายเงิน onsiteDay แล้ว
+
+    // ✅ แก้ไข: คำนวณจำนวนวันที่ต้องจ่ายเงิน onsiteDay ก่อน (จ่ายครั้งเดียวต่อวัน)
+    const onsiteDayPaymentAmount = onsiteDayDates.size * 850;  // 850 บาท/วัน
+    let onsiteDayAmountDistributed = 0;  // ยอดเงินที่แจกจ่ายไปแล้ว
+    const onsiteDayTotalStudents = Array.from(tutorData.students.values()).filter(s => s.courseType === 'onsiteDay').length;
 
     tutorData.students.forEach((studentData, key) => {
       const totalHours = studentData.totalHours;
@@ -733,39 +737,25 @@ function createSummaryWithDetailsPayment(filteredData, tutorLookup) {
 
       if (paymentResult.shouldPay) {
         // ============================================================
-        // 🆕 สำหรับ onsiteDay: จ่ายเงินครั้งเดียวต่อวัน ไม่ใช่ต่อ course
+        // 🆕 สำหรับ onsiteDay: แจกจ่ายเงินให้นักเรียนคนแรก
         // ============================================================
         if (courseType === 'onsiteDay') {
-          // หาวันที่สอนของ course นี้
-          const sessionDates = studentData.sessions.map(s => formatDateString(s.date));
-          let dayPaid = false;
-
-          // เช็คแต่ละวันว่าจ่ายแล้วหรือยัง
-          sessionDates.forEach(dateStr => {
-            if (!onsiteDayPaymentProcessed.has(dateStr)) {
-              // วันนี้ยังไม่จ่าย → จ่าย 850 บาท
-              if (!dayPaid) {
-                amount += paymentResult.amount;  // 850 บาท
-                onsiteDayPaymentProcessed.add(dateStr);
-                dayPaid = true;
-                Logger.log(`  ✅ onsiteDay payment for ${dateStr}: ${paymentResult.amount} บาท`);
-              }
-            } else {
-              Logger.log(`  ⏭️  Skip onsiteDay payment for ${dateStr}: already paid`);
-            }
-          });
-
-          if (amount > 0) {
+          if (onsiteDayAmountDistributed === 0) {
+            // นักเรียนคนแรกที่เป็น onsiteDay รับเงินทั้งหมด
+            amount = onsiteDayPaymentAmount;
+            onsiteDayAmountDistributed = amount;
             totalAmount += amount;
             coursesCompleted++;
             status = '✅ จ่าย';
-            note = paymentResult.note;
+            note = `850฿/วัน × ${onsiteDayDates.size} วัน`;
+            Logger.log(`  ✅ onsiteDay payment (${onsiteDayDates.size} days): ${amount} บาท for ${studentData.studentName}`);
           } else {
-            // ถ้าทุกวันถูกจ่ายไปแล้ว (ในแถวอื่น) → แสดงว่าเป็นส่วนหนึ่งของวันเดียวกัน
+            // นักเรียนคนอื่นๆ แสดงว่ารวมในยอดแล้ว
             coursesPending++;
             status = '✅ จ่าย';
             note = '✅ รวมในยอดเหมารายวัน';
             amount = 0;
+            Logger.log(`  ⏭️  onsiteDay for ${studentData.studentName}: included in day rate`);
           }
         } else {
           // ประเภทอื่นๆ: จ่ายตามปกติ
@@ -1019,11 +1009,14 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
       rowsForTutor++;
     });
 
+    // สร้างข้อความสรุปสำหรับแถว **รวม**
+    const totalSummaryText = createTutorTotalSummary(courseTypeGroups);
+
     // แถวรวมทั้งหมด
     const totalRowData = [
       '', '', '', '', '', '', '',
       '**รวม**',                         // H: รวม
-      '', '', '', '',                    // I-L: empty
+      '', '', '', '',                    // I-L: รายละเอียดสรุป (will merge)
       totalDuration || 0,                // M: ชม.รวม
       totalAmount || 0                   // N: ยอดเงิน
     ];
@@ -1035,6 +1028,14 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
       .setHorizontalAlignment('right')
       .setFontSize(9)
       .setFontWeight('bold');
+
+    // I-L: รายละเอียดสรุป (merge 4 columns)
+    dashboard.getRange(currentRow, 9, 1, 4).merge()
+      .setValue(totalSummaryText)
+      .setHorizontalAlignment('left')
+      .setFontSize(7)
+      .setWrap(true)
+      .setVerticalAlignment('middle');
 
     // M: ชม.รวม (bold)
     dashboard.getRange(currentRow, 13)
@@ -1138,8 +1139,7 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
     .setHorizontalAlignment('center');
 
   dashboard.getRange(currentRow, 1, 1, 14)
-    .setBackground('#fef7e0')
-    .setBorder(true, true, true, true, true, true, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+    .setBackground('#fef7e0');
 
   dashboard.setRowHeight(currentRow, 28);
   currentRow += 3;  // เว้น 2 แถว เพื่อแยกส่วนสรุปกับรายละเอียดให้ชัดเจน
@@ -1552,6 +1552,42 @@ function groupStudentsByCourseType(students) {
   });
 
   return sorted;
+}
+
+// ============================================================
+// 📊 CREATE TUTOR TOTAL SUMMARY
+// สร้างข้อความสรุปสำหรับแถว **รวม** ของแต่ละติวเตอร์
+// Format: "online1by1: 3 คอร์ส | onsite1by1: 2 คอร์ส | onsiteDay: 5 วัน"
+// ============================================================
+function createTutorTotalSummary(courseTypeGroups) {
+  const summaries = [];
+
+  courseTypeGroups.forEach((group, courseType) => {
+    const students = group.students || [];
+
+    if (courseType === 'onsiteDay') {
+      // สำหรับ onsiteDay: นับจำนวนวันที่ไม่ซ้ำ
+      const uniqueDates = new Set();
+      students.forEach(studentData => {
+        if (studentData.sessions) {
+          studentData.sessions.forEach(session => {
+            uniqueDates.add(formatDateString(session.date));
+          });
+        }
+      });
+      if (uniqueDates.size > 0) {
+        summaries.push(`${courseType}: สอน ${uniqueDates.size} วัน`);
+      }
+    } else {
+      // สำหรับ courseType อื่นๆ: นับจำนวนคอร์สที่จ่ายแล้ว
+      const paidCourses = students.filter(s => s.status === '✅ จ่าย').length;
+      if (paidCourses > 0) {
+        summaries.push(`${courseType}: สอนจบ ${paidCourses} คอร์ส`);
+      }
+    }
+  });
+
+  return summaries.join(' | ');
 }
 
 // ============================================================
