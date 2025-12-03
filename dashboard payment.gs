@@ -53,22 +53,22 @@ function setupDashboardPayment() {
   // ROW 3: ปี + รอบ + ปุ่มอัพเดต (แนวนอน 1 แถว) + เพิ่ม checkbox "ทั้งหมด"
   // ============================================================
   // ปี
-  dashboard.getRange('A3').setValue('📅 ปี').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('B3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);  // Checkbox "ทั้งหมด"
-  dashboard.getRange('C3').setValue('ทั้งหมด').setHorizontalAlignment('center').setFontSize(8).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('D3').setValue('2025').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('E3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('F3').setValue('2026').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('G3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('A3').setValue('📅 ปี').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('B3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);  // Checkbox "ทั้งหมด"
+  dashboard.getRange('C3').setValue('ทั้งหมด').setHorizontalAlignment('center').setFontSize(8).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('D3').setValue('2025').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('E3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('F3').setValue('2026').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('G3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
 
   // รอบ
-  dashboard.getRange('H3').setValue('📅 รอบ').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('I3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);  // Checkbox "ทั้งหมด"
-  dashboard.getRange('J3').setValue('ทั้งหมด').setHorizontalAlignment('center').setFontSize(8).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('K3').setValue('1-15').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('L3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('M3').setValue('16-30').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('N3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('H3').setValue('📅 รอบ').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('I3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);  // Checkbox "ทั้งหมด"
+  dashboard.getRange('J3').setValue('ทั้งหมด').setHorizontalAlignment('center').setFontSize(8).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('K3').setValue('1-15').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('L3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('M3').setValue('16-30').setHorizontalAlignment('center').setFontSize(9).setBackground(PAYMENT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('N3').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
 
   dashboard.setRowHeight(3, 30);
   dashboard.getRange('A3:N3').setBorder(true, true, true, true, true, true, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
@@ -76,13 +76,13 @@ function setupDashboardPayment() {
   // ============================================================
   // ROW 5-6: เดือน + เพิ่ม checkbox "ทั้งหมด" + ปุ่มอัพเดต
   // ============================================================
-  // A5: Label "เดือน"
-  dashboard.getRange('A5').setValue('เดือน').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.month).setHorizontalAlignment('center');
-  dashboard.getRange('A6').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.month);  // Checkbox "ทั้งหมด"
+  // A5-A6: ไอคอนปฏิทิน
+  dashboard.getRange('A5').setValue('📅').setFontSize(14).setBackground(PAYMENT_CONFIG.COLORS.month).setHorizontalAlignment('center').setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('A6').setValue('').setBackground(PAYMENT_CONFIG.COLORS.month).setVerticalAlignment('middle').setWrap(true);
 
   // B5: Label "ทั้งหมด"
-  dashboard.getRange('B5').setValue('ทั้งหมด').setHorizontalAlignment('center').setFontSize(8).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.month);
-  dashboard.getRange('B6').setBackground(PAYMENT_CONFIG.COLORS.month);
+  dashboard.getRange('B5').setValue('ทั้งหมด').setHorizontalAlignment('center').setFontSize(8).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.month).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('B6').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.month).setVerticalAlignment('middle').setWrap(true);  // Checkbox "ทั้งหมด"
 
   // Row 5: ชื่อเดือน (C5-N5 = 12 เดือน)
   SHARED_CONFIG.MONTH_SHORT.forEach((month, index) => {
@@ -90,7 +90,9 @@ function setupDashboardPayment() {
       .setValue(month)
       .setHorizontalAlignment('center')
       .setFontSize(8)
-      .setBackground(PAYMENT_CONFIG.COLORS.month);
+      .setBackground(PAYMENT_CONFIG.COLORS.month)
+      .setVerticalAlignment('middle')
+      .setWrap(true);
   });
 
   // Row 6: Checkbox เดือน (C6-N6 = 12 เดือน)
@@ -98,7 +100,9 @@ function setupDashboardPayment() {
     dashboard.getRange(6, i + 3)  // C6-N6
       .insertCheckboxes()
       .setHorizontalAlignment('center')
-      .setBackground(PAYMENT_CONFIG.COLORS.month);
+      .setBackground(PAYMENT_CONFIG.COLORS.month)
+      .setVerticalAlignment('middle')
+      .setWrap(true);
   }
 
   dashboard.setRowHeight(5, 22);
@@ -122,17 +126,17 @@ function setupDashboardPayment() {
   // ============================================================
   // ROW 9: ติวเตอร์ Header (ย้ายจาก row 8 → row 9)
   // ============================================================
-  dashboard.getRange('A9').setValue('👨‍🏫 ติวเตอร์').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.getRange('B9').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.getRange('C9').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.getRange('D9').setValue('(กด "อัพเดต" เพื่อแสดงรายชื่อ)').setFontSize(8).setFontColor('#999999').setFontStyle('italic').setBackground(PAYMENT_CONFIG.COLORS.tutor);
+  dashboard.getRange('A9').setValue('👨‍🏫 ติวเตอร์').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.tutor).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('B9').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.tutor).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('C9').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.tutor).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('D9').setValue('(กด "อัพเดต" เพื่อแสดงรายชื่อ)').setFontSize(8).setFontColor('#999999').setFontStyle('italic').setBackground(PAYMENT_CONFIG.COLORS.tutor).setVerticalAlignment('middle').setWrap(true);
   // E9:N9 ไว้ให้ dynamic checkbox ใช้
-  dashboard.getRange('E9:N9').setBackground(PAYMENT_CONFIG.COLORS.tutor);
+  dashboard.getRange('E9:N9').setBackground(PAYMENT_CONFIG.COLORS.tutor).setVerticalAlignment('middle').setWrap(true);
   dashboard.setRowHeight(9, 25);
 
   // ROW 10-11: Placeholder ติวเตอร์ (Label + Checkbox)
-  dashboard.getRange('A10:N10').setBackground('#d9ead3');
-  dashboard.getRange('A11:N11').setBackground('#d9ead3');
+  dashboard.getRange('A10:N10').setBackground('#d9ead3').setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('A11:N11').setBackground('#d9ead3').setVerticalAlignment('middle').setWrap(true);
   dashboard.setRowHeight(10, 20);
   dashboard.setRowHeight(11, 22);
   dashboard.getRange('A9:N11').setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
@@ -227,11 +231,11 @@ function updateTutorCheckboxesPayment() {
   const tutorRowsUsed = displayCheckboxRowPayment(dashboard, tutors, 10, 11, '#d9ead3');
 
   // Update tutor header (Row 9 - moved from row 8)
-  dashboard.getRange('A9').setValue('👨‍🏫 ติวเตอร์').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.getRange('B9').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.getRange('C9').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.getRange('D9').setValue('(' + tutors.length + ' คน)').setFontSize(8).setFontColor('#666666').setFontStyle('italic').setBackground(PAYMENT_CONFIG.COLORS.tutor);
-  dashboard.getRange('E9:N9').setValue('').setBackground(PAYMENT_CONFIG.COLORS.tutor);  // เคลียร์ E9:N9 (changed from E8:M8)
+  dashboard.getRange('A9').setValue('👨‍🏫 ติวเตอร์').setFontWeight('bold').setFontSize(10).setBackground(PAYMENT_CONFIG.COLORS.tutor).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('B9').insertCheckboxes().setHorizontalAlignment('center').setBackground(PAYMENT_CONFIG.COLORS.tutor).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('C9').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(PAYMENT_CONFIG.COLORS.tutor).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('D9').setValue('(' + tutors.length + ' คน)').setFontSize(8).setFontColor('#666666').setFontStyle('italic').setBackground(PAYMENT_CONFIG.COLORS.tutor).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('E9:N9').setValue('').setBackground(PAYMENT_CONFIG.COLORS.tutor).setVerticalAlignment('middle').setWrap(true);  // เคลียร์ E9:N9 (changed from E8:M8)
 
   // Border for tutor section (14 columns, changed from 13)
   dashboard.getRange(9, 1, tutorRowsUsed + 1, 14).setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
@@ -291,7 +295,9 @@ function displayCheckboxRowPayment(dashboard, items, labelRow, checkboxRow, bgCo
         .setValue(items[itemIndex + col])
         .setHorizontalAlignment('center')
         .setFontSize(8)
-        .setBackground(bgColor);
+        .setBackground(bgColor)
+        .setVerticalAlignment('middle')
+        .setWrap(true);
     }
 
     // Display checkboxes
@@ -299,7 +305,9 @@ function displayCheckboxRowPayment(dashboard, items, labelRow, checkboxRow, bgCo
       dashboard.getRange(currentRow + 1, col + 1)
         .insertCheckboxes()
         .setHorizontalAlignment('center')
-        .setBackground(bgColor);
+        .setBackground(bgColor)
+        .setVerticalAlignment('middle')
+        .setWrap(true);
     }
 
     itemIndex += itemsInThisRow;
@@ -342,8 +350,8 @@ function getSelectedYearsPayment(dashboard) {
 function getSelectedMonthsPayment(dashboard) {
   const months = [];
 
-  // Check "ทั้งหมด" checkbox at A6
-  if (dashboard.getRange('A6').getValue() === true) {
+  // Check "ทั้งหมด" checkbox at B6 (moved from A6)
+  if (dashboard.getRange('B6').getValue() === true) {
     return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];  // Return all months
   }
 
@@ -1261,7 +1269,14 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
 
     dashboard.getRange(currentRow, 1, 1, 14).setValues([summaryRowData]);
 
-    // Format individual cells
+    // Set alignment for all cells: Middle + Center + Wrap
+    dashboard.getRange(currentRow, 1, 1, 14)
+      .setVerticalAlignment('middle')
+      .setHorizontalAlignment('center')
+      .setWrap(true)
+      .setFontSize(8);
+
+    // Format individual cells (override horizontal alignment where needed)
     dashboard.getRange(currentRow, 1).setHorizontalAlignment('center').setFontSize(8);
     dashboard.getRange(currentRow, 2).setHorizontalAlignment('center').setFontSize(8);
     dashboard.getRange(currentRow, 3).setHorizontalAlignment('center').setFontSize(8);
@@ -1284,7 +1299,7 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
       .setHorizontalAlignment('left')
       .setFontSize(7)
       .setWrap(true)
-      .setVerticalAlignment('top');
+      .setVerticalAlignment('middle');
 
     // M: ชม.รวม
     dashboard.getRange(currentRow, 13)

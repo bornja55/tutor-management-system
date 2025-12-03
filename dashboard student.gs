@@ -86,18 +86,18 @@ function setupDashboardReport() {
   // ROW 5: ปี + รอบ + ปุ่มอัพเดต (แถวเดียว)
   // ============================================================
   // ปี
-  dashboard.getRange('A5').setValue('📅 ปี').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('B5').setValue('2025').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('C5').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('D5').setValue('2026').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('E5').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  
+  dashboard.getRange('A5').setValue('📅 ปี').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('B5').setValue('2025').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('C5').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('D5').setValue('2026').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('E5').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+
   // รอบ
-  dashboard.getRange('F5').setValue('📅 รอบ').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('G5').setValue('1-15').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('H5').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('I5').setValue('16-31').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod);
-  dashboard.getRange('J5').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod);
+  dashboard.getRange('F5').setValue('📅 รอบ').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('G5').setValue('1-15').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('H5').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('I5').setValue('16-31').setHorizontalAlignment('center').setFontSize(9).setBackground(REPORT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('J5').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.yearPeriod).setVerticalAlignment('middle').setWrap(true);
   
   // ปุ่มอัพเดต
   dashboard.getRange('K5:L5').merge()
@@ -117,24 +117,28 @@ function setupDashboardReport() {
   // ============================================================
   const monthShort = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
   
-  dashboard.getRange('A7').setValue('📅 เดือน').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.month);
-  
+  dashboard.getRange('A7').setValue('📅 เดือน').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.month).setVerticalAlignment('middle').setWrap(true);
+
   // Row 7: ชื่อเดือน
   monthShort.forEach((month, index) => {
     dashboard.getRange(7, index + 2)
       .setValue(month)
       .setHorizontalAlignment('center')
       .setFontSize(8)
-      .setBackground(REPORT_CONFIG.COLORS.month);
+      .setBackground(REPORT_CONFIG.COLORS.month)
+      .setVerticalAlignment('middle')
+      .setWrap(true);
   });
-  
+
   // Row 8: Checkbox เดือน
-  dashboard.getRange('A8').setValue('').setBackground(REPORT_CONFIG.COLORS.month);
+  dashboard.getRange('A8').setValue('').setBackground(REPORT_CONFIG.COLORS.month).setVerticalAlignment('middle').setWrap(true);
   for (let i = 0; i < 12; i++) {
     dashboard.getRange(8, i + 2)
       .insertCheckboxes()
       .setHorizontalAlignment('center')
-      .setBackground(REPORT_CONFIG.COLORS.month);
+      .setBackground(REPORT_CONFIG.COLORS.month)
+      .setVerticalAlignment('middle')
+      .setWrap(true);
   }
   
   dashboard.setRowHeight(7, 22);
@@ -144,15 +148,15 @@ function setupDashboardReport() {
   // ============================================================
   // ROW 10: นักเรียน Header
   // ============================================================
-  dashboard.getRange('A10').setValue('👤 นักเรียน').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.student);
-  dashboard.getRange('B10').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.student);
-  dashboard.getRange('C10').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(REPORT_CONFIG.COLORS.student);
-  dashboard.getRange('D10:M10').merge().setValue('(กด "อัพเดต" เพื่อแสดงรายชื่อ)').setFontSize(8).setFontColor('#999999').setFontStyle('italic').setBackground(REPORT_CONFIG.COLORS.student);
+  dashboard.getRange('A10').setValue('👤 นักเรียน').setFontWeight('bold').setFontSize(10).setBackground(REPORT_CONFIG.COLORS.student).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('B10').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.student).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('C10').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(REPORT_CONFIG.COLORS.student).setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('D10:M10').merge().setValue('(กด "อัพเดต" เพื่อแสดงรายชื่อ)').setFontSize(8).setFontColor('#999999').setFontStyle('italic').setBackground(REPORT_CONFIG.COLORS.student).setVerticalAlignment('middle').setWrap(true);
   dashboard.setRowHeight(10, 25);
-  
+
   // ROW 11-12: Placeholder นักเรียน (Label + Checkbox)
-  dashboard.getRange('A11:M11').setBackground('#fffde7');
-  dashboard.getRange('A12:M12').setBackground('#fffde7');
+  dashboard.getRange('A11:M11').setBackground('#fffde7').setVerticalAlignment('middle').setWrap(true);
+  dashboard.getRange('A12:M12').setBackground('#fffde7').setVerticalAlignment('middle').setWrap(true);
   dashboard.setRowHeight(11, 20);
   dashboard.setRowHeight(12, 22);
   dashboard.getRange('A10:M12').setBorder(true, true, true, true, null, null, '#cccccc', SpreadsheetApp.BorderStyle.SOLID);
@@ -363,13 +367,17 @@ function displayCheckboxRow(dashboard, items, labelRow, checkboxRow, bgColor) {
       .setValue(items[i])
       .setHorizontalAlignment('center')
       .setFontSize(8)
-      .setBackground(bgColor);
-    
+      .setBackground(bgColor)
+      .setVerticalAlignment('middle')
+      .setWrap(true);
+
     // Checkbox
     dashboard.getRange(checkboxRow, i + 1)
       .insertCheckboxes()
       .setHorizontalAlignment('center')
-      .setBackground(bgColor);
+      .setBackground(bgColor)
+      .setVerticalAlignment('middle')
+      .setWrap(true);
   }
   
   // If more than 12, show indicator
