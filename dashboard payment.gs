@@ -1376,17 +1376,21 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
 
       dashboard.getRange(currentRow, 1, 1, 14).setValues([detailRow]);
 
+      // Set alignment for all cells: Middle + Center + Wrap
+      dashboard.getRange(currentRow, 1, 1, 14)
+        .setVerticalAlignment('middle')
+        .setHorizontalAlignment('center')
+        .setWrap(true)
+        .setFontSize(8);
+
       // D: Course Type
       dashboard.getRange(currentRow, 4)
-        .setHorizontalAlignment('center')
         .setFontSize(7)
         .setFontWeight('bold');
 
       // I: ยอดเงิน (single cell)
       dashboard.getRange(currentRow, 9)
-        .setNumberFormat('#,##0.00')
-        .setFontSize(8)
-        .setHorizontalAlignment('center');
+        .setNumberFormat('#,##0.00');
 
       // Merge J-L for รายละเอียด (session details)
       let detailsText = '';
@@ -1405,7 +1409,7 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
         .setValue(detailsText)
         .setFontSize(7)
         .setWrap(true)
-        .setVerticalAlignment('top')
+        .setVerticalAlignment('middle')
         .setHorizontalAlignment('left');
 
       // N: หมายเหตุ (notes only)
@@ -1413,15 +1417,13 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
         .setValue(studentData.note || '')
         .setFontSize(7)
         .setWrap(true)
-        .setVerticalAlignment('top')
+        .setVerticalAlignment('middle')
         .setHorizontalAlignment('left');
 
       // Number formats
       dashboard.getRange(currentRow, 6).setNumberFormat('#,##0.0');  // จำนวนชั่วโมง
       dashboard.getRange(currentRow, 7).setNumberFormat('#,##0');    // อัตรา/ชม.
       dashboard.getRange(currentRow, 8).setNumberFormat('#,##0.0');  // ชม.รวม
-
-      dashboard.getRange(currentRow, 1, 1, 14).setFontSize(8);
 
       // Status color (column M = 13)
       if (studentData.status === '✅ จ่าย') {
