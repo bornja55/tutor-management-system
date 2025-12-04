@@ -994,11 +994,17 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
 
       dashboard.getRange(currentRow, 1, 1, 14).setValues([summaryRowData]);
 
-      // Set alignment for all cells: Middle + Center + Wrap
-      dashboard.getRange(currentRow, 1, 1, 14)
+      // Set alignment for all cells: Middle + Center + Wrap (A-M only, exclude N)
+      dashboard.getRange(currentRow, 1, 1, 13)
         .setVerticalAlignment('middle')
         .setHorizontalAlignment('center')
         .setWrap(true)
+        .setFontSize(8);
+
+      // Column N: no wrap text
+      dashboard.getRange(currentRow, 14)
+        .setVerticalAlignment('middle')
+        .setHorizontalAlignment('center')
         .setFontSize(8);
 
       // H: Course Type
@@ -1406,11 +1412,17 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
 
       dashboard.getRange(currentRow, 1, 1, 14).setValues([detailRow]);
 
-      // Set alignment for all cells: Middle + Center + Wrap
-      dashboard.getRange(currentRow, 1, 1, 14)
+      // Set alignment for all cells: Middle + Center + Wrap (A-M only, exclude N)
+      dashboard.getRange(currentRow, 1, 1, 13)
         .setVerticalAlignment('middle')
         .setHorizontalAlignment('center')
         .setWrap(true)
+        .setFontSize(8);
+
+      // Column N: no wrap text
+      dashboard.getRange(currentRow, 14)
+        .setVerticalAlignment('middle')
+        .setHorizontalAlignment('center')
         .setFontSize(8);
 
       // D: Course Type
@@ -1442,11 +1454,10 @@ function displaySummaryWithDetailsPayment(dashboard, startRow, summary, details)
         .setVerticalAlignment('middle')
         .setHorizontalAlignment('left');
 
-      // N: หมายเหตุ (notes only)
+      // N: หมายเหตุ (notes only) - no wrap text
       dashboard.getRange(currentRow, 14)
         .setValue(studentData.note || '')
         .setFontSize(7)
-        .setWrap(true)
         .setVerticalAlignment('middle')
         .setHorizontalAlignment('left');
 

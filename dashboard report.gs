@@ -1210,11 +1210,17 @@ function displayStudentReport(dashboard, studentMap) {
 
       dashboard.getRange(currentRow, 1, 1, 14).setValues([rowData]);
 
-      // Set alignment for all cells: Middle + Center + Wrap
-      dashboard.getRange(currentRow, 1, 1, 14)
+      // Set alignment for all cells: Middle + Center + Wrap (A-M only, exclude N)
+      dashboard.getRange(currentRow, 1, 1, 13)
         .setVerticalAlignment('middle')
         .setHorizontalAlignment('center')
         .setWrap(true)
+        .setFontSize(8);
+
+      // Column N: no wrap text
+      dashboard.getRange(currentRow, 14)
+        .setVerticalAlignment('middle')
+        .setHorizontalAlignment('center')
         .setFontSize(8);
 
       // Merge H-M for Feedback (6 columns, expanded from 5)
@@ -1412,11 +1418,17 @@ function displayTutorReport(dashboard, tutorMap) {
 
       dashboard.getRange(currentRow, 1, 1, 14).setValues([summaryRowData]);
 
-      // Set alignment for all cells: Middle + Center + Wrap
-      dashboard.getRange(currentRow, 1, 1, 14)
+      // Set alignment for all cells: Middle + Center + Wrap (A-M only, exclude N)
+      dashboard.getRange(currentRow, 1, 1, 13)
         .setVerticalAlignment('middle')
         .setHorizontalAlignment('center')
         .setWrap(true)
+        .setFontSize(8);
+
+      // Column N: no wrap text
+      dashboard.getRange(currentRow, 14)
+        .setVerticalAlignment('middle')
+        .setHorizontalAlignment('center')
         .setFontSize(8);
 
       // H: Course Type
@@ -1677,11 +1689,17 @@ function displayTutorReport(dashboard, tutorMap) {
 
       dashboard.getRange(currentRow, 1, 1, 14).setValues([rowData]);
 
-      // Set alignment for all cells: Middle + Center + Wrap
-      dashboard.getRange(currentRow, 1, 1, 14)
+      // Set alignment for all cells: Middle + Center + Wrap (A-M only, exclude N)
+      dashboard.getRange(currentRow, 1, 1, 13)
         .setVerticalAlignment('middle')
         .setHorizontalAlignment('center')
         .setWrap(true)
+        .setFontSize(8);
+
+      // Column N: no wrap text
+      dashboard.getRange(currentRow, 14)
+        .setVerticalAlignment('middle')
+        .setHorizontalAlignment('center')
         .setFontSize(8);
 
       // Merge D-E for วิชา
