@@ -1,7 +1,7 @@
 # 📚 English Mania - ระบบบันทึกและรายงานผลการสอนอัตโนมัติ
 
-> **Last Updated:** 3 ธันวาคม 2568
-> **Version:** 8.3
+> **Last Updated:** 4 ธันวาคม 2568
+> **Version:** 8.5 (Payment 7.6)
 > **Status:** 🟢 Active
 
 ---
@@ -218,6 +218,35 @@
 ---
 
 ## 📝 Change Log
+
+### **Version 8.5 / Payment 7.6** (4 ธันวาคม 2568) - 🎨 UX Enhancement & Default Filters
+
+**🎯 Major Changes:**
+
+- ✅ **Cell Alignment ทุก Dashboard:**
+  - เพิ่ม Middle + Center + Wrap text ให้ส่วน filter ทั้งหมด
+  - Dashboard Payment: Row 3 (ปี+รอบ), Row 5-6 (เดือน), Row 9-11 (ติวเตอร์)
+  - Dashboard Report: Row 2 (ปี+รอบ), Row 3-4 (เดือน), Row 5-7 (นักเรียน), Row 8-10 (ติวเตอร์)
+  - เพิ่ม alignment ใน dynamic checkbox functions
+
+- ✅ **Month Checkbox Reorganization:**
+  - Dashboard Payment: ย้าย checkbox "ทั้งหมด" จาก A6 → B6, เพิ่มไอคอน 📅 ที่ A5
+  - Dashboard Report: ย้าย checkbox "ทั้งหมด" จาก A4 → B4, เพิ่มไอคอน 📅 ที่ A3
+  - อัปเดต `getSelectedMonths*` functions ให้อ่านจาก position ใหม่
+
+- ✅ **Default Filter Selection:**
+  - Dashboard Payment v7.6: ตั้งค่า default ให้เลือก ปี, รอบ, เดือน, ติวเตอร์ = ทั้งหมด
+  - Dashboard Report v8.5: ตั้งค่า default ให้เลือก ปี, รอบ, เดือน, นักเรียน, ติวเตอร์ = ทั้งหมด
+  - ผู้ใช้สามารถเริ่มใช้งานได้ทันทีหลัง setup โดยไม่ต้องเลือก filter เอง
+
+**🔧 Technical Details:**
+
+- เพิ่ม `.setVerticalAlignment('middle').setWrap(true)` ให้ทุก cell ใน filter section
+- ปรับ vertical alignment ของ merged cells จาก 'top' เป็น 'middle'
+- เพิ่มการ `setValue(true)` ให้ checkbox "ทั้งหมด" ในทุก filter category
+- Commits: 92087a0, ca00a76, 97149c3
+
+---
 
 ### **Version 8.3** (3 ธันวาคม 2568) - 🎨 UI/UX Enhancement & Bug Fixes
 
