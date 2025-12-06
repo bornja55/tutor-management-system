@@ -39,10 +39,10 @@
 
 - เพิ่ม Column N: LINE OA User ID ⭐ (สำคัญมาก!)
 - เพิ่ม Column O: Phone Number
-- เพิ่ม Column P: Registration Date
-- เพิ่ม Column Q: Verification Status
-- เพิ่ม Column R: Last Updated
-- ย้าย Payment Rules จาก P-T → S-W
+- เพิ่ม Column U: Registration Date (หลัง Payment Rules)
+- เพิ่ม Column V: Verification Status
+- เพิ่ม Column W: Last Updated
+- **ไม่ย้าย Payment Rules** (P-T) - ยังใช้งานอยู่!
 
 **อัปเดต README.md:**
 

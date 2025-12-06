@@ -190,18 +190,36 @@ Workflow:
 
 ## 🔧 การปรับปรุง TutorDB
 
-### คอลัมน์เพิ่มเติมที่จำเป็น:
+### โครงสร้างปัจจุบัน (ห้ามแก้ไข):
+
+```
+Column A-K: ข้อมูลติวเตอร์ (Full Name, Nick, Contact, etc.)
+Column L: lineDisplay (LINE Display Name จาก Group)
+Column M: lineGroupId (LINE Group User ID)
+Column N: (ว่าง - พร้อมใช้งาน)
+Column O: (ว่าง - พร้อมใช้งาน)
+Column P-T: Payment Rules (ต้องไม่แก้ไข!) ⚠️
+  - Column P (15): online1by1Trigger
+  - Column Q (16): onsite1by1Trigger
+  - Column R (17): onsiteGroupTrigger
+  - Column S (18): onsiteDayTrigger
+  - Column T (19): conditions
+```
+
+### คอลัมน์ใหม่ที่เพิ่ม (ไม่กระทบโค้ดเดิม):
 
 ```
 Column N: lineOaUserId (LINE OA User ID) ⭐ สำคัญมาก!
 Column O: phoneNumber (เบอร์โทร - สำหรับยืนยันตัวตน)
-Column P: registeredAt (วันที่ลงทะเบียน)
-Column Q: verificationStatus (สถานะการยืนยัน)
+Column U: registeredAt (วันที่ลงทะเบียน) - เพิ่มหลัง Column T
+Column V: verificationStatus (สถานะการยืนยัน)
   - ✅ Verified (ยืนยันแล้ว)
   - ⏳ Pending (รอยืนยัน)
   - ❌ Unregistered (ยังไม่ลงทะเบียน)
-Column R: lastUpdated (อัปเดตล่าสุด)
+Column W: lastUpdated (อัปเดตล่าสุด)
 ```
+
+**⚠️ สำคัญ:** Columns P-T ใช้งานอยู่ในโค้ด Payment Rules ห้ามแก้ไข!
 
 ---
 

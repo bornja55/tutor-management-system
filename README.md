@@ -60,8 +60,8 @@
 
 ### **6. ระบบจัดการฐานข้อมูล (Shared Utilities)** ✅ เสร็จสิ้น
 - **TutorDB**: ใช้ชีตแยกต่างหากเป็นฐานข้อมูลกลางสำหรับติวเตอร์ เพื่อให้สามารถอ้างอิง "ชื่อจริง" ของติวเตอร์ได้ แม้ชื่อที่แสดงใน LINE จะเปลี่ยนไป
-- **TutorDB Identity (Columns L-R)** ⚙️: เก็บข้อมูลยืนยันตัวตน (LINE Display Name L, LINE Group ID M, **LINE OA User ID N**, Phone Number O, Registration Date P, Verification Status Q, Last Updated R)
-- **TutorDB Payment Rules (Columns S-W)**: เก็บเงื่อนไขการจ่ายเงินแยกรายบุคคลในคอลัมน์เดียวกับข้อมูลติวเตอร์ (อัตรา F-I, Payment Triggers S-V, Conditions W)
+- **TutorDB Identity (Columns N-O, U-W)** ⚙️: เก็บข้อมูลยืนยันตัวตน (**LINE OA User ID N**, Phone Number O, Registration Date U, Verification Status V, Last Updated W)
+- **TutorDB Payment Rules (Columns P-T)** ✅: เก็บเงื่อนไขการจ่ายเงินแยกรายบุคคล (online1by1 P, onsite1by1 Q, onsiteGroup R, onsiteDay S, Conditions T)
 - **Shared Config & Functions**: รวมการตั้งค่า (เช่น เรทค่าสอน) และฟังก์ชันที่ใช้ร่วมกันไว้ที่ส่วนกลาง ทำให้ง่ายต่อการบำรุงรักษา
 - **Payment Rules Engine**: ระบบคำนวณเงินอัตโนมัติตาม rules ที่กำหนด รองรับ conditions และ triggers ต่างๆ
 
