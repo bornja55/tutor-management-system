@@ -1,11 +1,11 @@
-Tutor Name,Address,National ID,Birth Day,Nick Name,Online 1by1,Onsite 1by1,Onsite group,Onsite Day,Email,Today,Line Display,Line ID,Book Bank,Book bank ID
-น.ส.ศิรดา ศรีประเทศ,80 หมู่ที่1 ตำบอลคลองกระจัง อำเภอศรีเทพ จ.เพชรบูรณ์,1 6705 00237 32 1,28/1/2535,นุ่น,150,250,250,-,siraphob.an@gmail.com,27/11/2025,Krunoon,U27a4929d5973241113cc0d322a6e15df,,
-น.ส.จุฑามาศ โศจิธรรมกุล,83/201 หมู่ที่6 ตำบลบางบัวทอง อำเภอบางบัวทอง นนทบุรี,1 1002 00150 02 0,30/9/2528,แยม,150,250,250,-,siraphob.an@gmail.com,27/11/2025,Scuba Yam,U20f7f331bb07b3586b711204424a155d,,
-น.ส.อรลออ นิลเปี่ยม,6 ซ.รามอินทรา 86 แยก 12-1 แขวงมีนบุรี เขตมีนบุรี กรุงเทพมหานคร,1 7399 02119 68 1,24/7/2547,ต้นปาล์ม,150,250,200,-,siraphob.an@gmail.com,27/11/2025,Palm,U56323d6a32305b4bd34e1c0ae2e50a45,,
-นายวราเทพ ศรีประเทศ,-,-,-,ต่อ,-,-,-,-,siraphob.an@gmail.com,27/11/2025,,,,
-น.ส.ธิดารัตน์ นาคอุดม,37 หมู่ที่5 ตำบลท่าพระ อำเภอเมืองขอนแก่น จ.ขอนแก่น,1 1043 00124 70 9,12/12/2541,ปุยฝ้าย,150,250,-,-,siraphob.an@gmail.com,27/11/2025,,,ไทยพาณิชย์,301-467933-6
-ภัทรพงศ์ พลเยี่ยม,-,-,-,ยู,150,250,-,-,siraphob.an@gmail.com,27/11/2025,UUUu,U47e810b8a1c3ff9b8b294d18a8c7ee11,,
-น.ส. กรองทอง พรเจริญ,-,-,-,เอมมี่,150,250,-,-,siraphob.an@gmail.com,27/11/2025,เอมมี่ 24 8 🌞🧨🧮,U7cc1f5605b6d782402d830ec2f64bf11,,
-น.ส. นริศรา บุญโส,173 หมู่ที่ 1 ต.โพนข่า อ.เมืองศรีสะเกษ จ.ศรีสะเกษ, 1037 03438 62 0,2 มิ.ย. 2545,บีม,150,-,-,-,siraphob.an@gmail.com,27/11/2025,Naris⚡️,U0e80f92d591fbacd6d31783d9fd7319c,,
-น.ส. ภัทรียาภรณ์ สกุลวิเศษชัยชาญ,1411/1230  Aspire รัชดา-วงศ์สว่าง ถนนกรุงเทพ-นนทบุรี แขวงวงศ์สว่าง เขตบางซื่อ 10800,1419902035226,11 ธ.ค. 2544,ปอปอ,150,200,200,850,siraphob.an@gmail.com,27/11/2025,Phatt S.,U26fc7d29c98f4c5a896517c0d9be84e7,,
-ติวเตอร์แก้ท,,,,แก้ท,150,250,250,-,siraphob.an@gmail.com,27/11/2025,Kanwara,U477e2b28de3dc5f2aec31f9501f30a6b,,
+Tutor Name,Address,National ID,Birth Day,Nick Name,Online 1by1,Onsite 1by1,Onsite group,Onsite Day,Email,Today,Line Display,Line ID,Book Bank,Book bank ID,Online1by1 Trigger,Onsite1by1 Trigger,OnsiteGroup Trigger,OnsiteDay Trigger,Conditions
+น.ส.ศิรดา ศรีประเทศ,80 หมู่ที่1 ตำบอลคลองกระจัง อำเภอศรีเทพ จ.เพชรบูรณ์,1 6705 00237 32 1,28/1/2535,นุ่น,150,250,250,-,siraphob.an@gmail.com,6/12/2025,Krunoon,U27a4929d5973241113cc0d322a6e15df,,,onCourseComplete,onCourseComplete,everyPeriod,everyPeriod,
+น.ส.จุฑามาศ โศจิธรรมกุล,83/201 หมู่ที่6 ตำบลบางบัวทอง อำเภอบางบัวทอง นนทบุรี,1 1002 00150 02 0,30/9/2528,แยม,150,250,250,-,siraphob.an@gmail.com,6/12/2025,Scuba Yam,U20f7f331bb07b3586b711204424a155d,,,everyPeriod,everyPeriod,everyPeriod,everyPeriod,
+น.ส.อรลออ นิลเปี่ยม,6 ซ.รามอินทรา 86 แยก 12-1 แขวงมีนบุรี เขตมีนบุรี กรุงเทพมหานคร,1 7399 02119 68 1,24/7/2547,ต้นปาล์ม,150,250,200,-,siraphob.an@gmail.com,6/12/2025,Palm,U56323d6a32305b4bd34e1c0ae2e50a45,,,onCourseComplete,onCourseComplete,onCourseComplete,everyPeriod,
+นายวราเทพ ศรีประเทศ,-,-,-,ต่อ,-,-,-,-,siraphob.an@gmail.com,6/12/2025,,,,,,,,,
+น.ส.ธิดารัตน์ นาคอุดม,37 หมู่ที่5 ตำบลท่าพระ อำเภอเมืองขอนแก่น จ.ขอนแก่น,1 1043 00124 70 9,12/12/2541,ปุยฝ้าย,150,250,-,-,siraphob.an@gmail.com,6/12/2025,,,ไทยพาณิชย์,301-467933-6,onCourseComplete,onCourseComplete,onCourseComplete,everyPeriod,
+ภัทรพงศ์ พลเยี่ยม,-,-,-,ยู,150,250,-,-,siraphob.an@gmail.com,6/12/2025,UUUu,U47e810b8a1c3ff9b8b294d18a8c7ee11,,,onCourseComplete,onCourseComplete,onCourseComplete,everyPeriod,
+น.ส. กรองทอง พรเจริญ,-,-,-,เอมมี่,150,250,-,-,siraphob.an@gmail.com,6/12/2025,เอมมี่ 24 8 🌞🧨🧮,U7cc1f5605b6d782402d830ec2f64bf11,,,onCourseComplete,onCourseComplete,onCourseComplete,everyPeriod,
+น.ส. นริศรา บุญโส,173 หมู่ที่ 1 ต.โพนข่า อ.เมืองศรีสะเกษ จ.ศรีสะเกษ, 1037 03438 62 0,2 มิ.ย. 2545,บีม,150,-,-,-,siraphob.an@gmail.com,6/12/2025,Naris⚡️,U0e80f92d591fbacd6d31783d9fd7319c,,,onCourseComplete,onCourseComplete,onCourseComplete,everyPeriod,
+น.ส. ภัทรียาภรณ์ สกุลวิเศษชัยชาญ,1411/1230  Aspire รัชดา-วงศ์สว่าง ถนนกรุงเทพ-นนทบุรี แขวงวงศ์สว่าง เขตบางซื่อ 10800,1419902035226,11 ธ.ค. 2544,ปอปอ,150,200,200,850,siraphob.an@gmail.com,6/12/2025,Phatt S.,U26fc7d29c98f4c5a896517c0d9be84e7,,,onCourseComplete,everyPeriod,everyPeriod,everyPeriod,"dayOfWeek:Saturday,Sunday→onsiteDay"
+ติวเตอร์แก้ท,,,,แก้ท,150,250,250,-,siraphob.an@gmail.com,6/12/2025,Kanwara,U477e2b28de3dc5f2aec31f9501f30a6b,,,onCourseComplete,onCourseComplete,onCourseComplete,everyPeriod,

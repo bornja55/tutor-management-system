@@ -190,36 +190,48 @@ Workflow:
 
 ## 🔧 การปรับปรุง TutorDB
 
-### โครงสร้างปัจจุบัน (ห้ามแก้ไข):
+### โครงสร้างปัจจุบัน (ตามไฟล์ CSV จริง):
 
 ```
-Column A-K: ข้อมูลติวเตอร์ (Full Name, Nick, Contact, etc.)
-Column L: lineDisplay (LINE Display Name จาก Group)
-Column M: lineGroupId (LINE Group User ID)
-Column N: (ว่าง - พร้อมใช้งาน)
-Column O: (ว่าง - พร้อมใช้งาน)
+Column A: Tutor Name
+Column B: Address
+Column C: National ID
+Column D: Birth Day
+Column E: Nick Name
+Column F: Online 1by1 (อัตราค่าสอน)
+Column G: Onsite 1by1 (อัตราค่าสอน)
+Column H: Onsite group (อัตราค่าสอน)
+Column I: Onsite Day (อัตราค่าสอน)
+Column J: Email
+Column K: Today
+Column L: Line Display
+Column M: Line ID (LINE Group User ID)
+Column N: Book Bank (ธนาคาร)
+Column O: Book bank ID (เลขบัญชี)
 Column P-T: Payment Rules (ต้องไม่แก้ไข!) ⚠️
-  - Column P (15): online1by1Trigger
-  - Column Q (16): onsite1by1Trigger
-  - Column R (17): onsiteGroupTrigger
-  - Column S (18): onsiteDayTrigger
-  - Column T (19): conditions
+  - Column P (15): Online1by1 Trigger
+  - Column Q (16): Onsite1by1 Trigger
+  - Column R (17): OnsiteGroup Trigger
+  - Column S (18): OnsiteDay Trigger
+  - Column T (19): Conditions
 ```
 
-### คอลัมน์ใหม่ที่เพิ่ม (ไม่กระทบโค้ดเดิม):
+### คอลัมน์ใหม่ที่เพิ่ม (เพิ่มท้าย - ไม่กระทบโค้ดเดิม):
 
 ```
-Column N: lineOaUserId (LINE OA User ID) ⭐ สำคัญมาก!
-Column O: phoneNumber (เบอร์โทร - สำหรับยืนยันตัวตน)
-Column U: registeredAt (วันที่ลงทะเบียน) - เพิ่มหลัง Column T
-Column V: verificationStatus (สถานะการยืนยัน)
+Column U: lineOaUserId (LINE OA User ID) ⭐ สำคัญมาก!
+Column V: phoneNumber (เบอร์โทร - สำหรับยืนยันตัวตน)
+Column W: registeredAt (วันที่ลงทะเบียน)
+Column X: verificationStatus (สถานะการยืนยัน)
   - ✅ Verified (ยืนยันแล้ว)
   - ⏳ Pending (รอยืนยัน)
   - ❌ Unregistered (ยังไม่ลงทะเบียน)
-Column W: lastUpdated (อัปเดตล่าสุด)
+Column Y: lastUpdated (อัปเดตล่าสุด)
 ```
 
-**⚠️ สำคัญ:** Columns P-T ใช้งานอยู่ในโค้ด Payment Rules ห้ามแก้ไข!
+**⚠️ สำคัญ:**
+- Columns N-O = Book Bank Info (ใช้งานอยู่)
+- Columns P-T = Payment Rules (ใช้งานอยู่ในโค้ด - ห้ามแก้ไข!)
 
 ---
 

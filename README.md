@@ -1,7 +1,7 @@
 # 📚 English Mania - ระบบบันทึกและรายงานผลการสอนอัตโนมัติ
 
-> **Last Updated:** 4 ธันวาคม 2568
-> **Version:** 8.5 (Payment 7.6)
+> **Last Updated:** 6 ธันวาคม 2568
+> **Version:** 8.6 (Payment 7.6)
 > **Status:** 🟢 Active
 
 ---
@@ -60,8 +60,9 @@
 
 ### **6. ระบบจัดการฐานข้อมูล (Shared Utilities)** ✅ เสร็จสิ้น
 - **TutorDB**: ใช้ชีตแยกต่างหากเป็นฐานข้อมูลกลางสำหรับติวเตอร์ เพื่อให้สามารถอ้างอิง "ชื่อจริง" ของติวเตอร์ได้ แม้ชื่อที่แสดงใน LINE จะเปลี่ยนไป
-- **TutorDB Identity (Columns N-O, U-W)** ⚙️: เก็บข้อมูลยืนยันตัวตน (**LINE OA User ID N**, Phone Number O, Registration Date U, Verification Status V, Last Updated W)
+- **TutorDB Identity (Columns U-Y)** ⚙️: เก็บข้อมูลยืนยันตัวตน (**LINE OA User ID U**, Phone Number V, Registration Date W, Verification Status X, Last Updated Y)
 - **TutorDB Payment Rules (Columns P-T)** ✅: เก็บเงื่อนไขการจ่ายเงินแยกรายบุคคล (online1by1 P, onsite1by1 Q, onsiteGroup R, onsiteDay S, Conditions T)
+- **TutorDB Bank Info (Columns N-O)** ✅: ข้อมูลบัญชีธนาคาร (Book Bank N, Book Bank ID O)
 - **Shared Config & Functions**: รวมการตั้งค่า (เช่น เรทค่าสอน) และฟังก์ชันที่ใช้ร่วมกันไว้ที่ส่วนกลาง ทำให้ง่ายต่อการบำรุงรักษา
 - **Payment Rules Engine**: ระบบคำนวณเงินอัตโนมัติตาม rules ที่กำหนด รองรับ conditions และ triggers ต่างๆ
 
@@ -395,6 +396,29 @@
 ---
 
 ## 📝 Change Log
+
+### **Version 8.6** (6 ธันวาคม 2568) - 🐛 Bug Fix: Wrap Text Display Issue
+
+**🐛 Bug Fixes:**
+
+- ✅ **Fixed Wrap Text Display in Column N:**
+  - แก้ปัญหา Column N (tutor name temp mapping / หมายเหตุ) มี wrap text ทำให้ display ยาวเกิน 1 หน้าจอ
+  - เอา wrap text ออกจาก Column N ในทั้ง Dashboard Payment และ Dashboard Report
+  - Column N ยังคง vertical + horizontal alignment แต่ไม่ wrap text อีกต่อไป
+
+**🔧 Technical Details:**
+
+- Dashboard Payment (3 ตำแหน่ง):
+  - Line 998-1008: ตารางสรุปติวเตอร์ - เปลี่ยนจาก wrap A-N เป็น A-M only
+  - Line 1416-1426: ตารางรายละเอียดนักเรียน - เปลี่ยนจาก wrap A-N เป็น A-M only
+  - Line 1458: Column N - ตั้งค่า alignment แยกโดยไม่มี wrap
+- Dashboard Report (3 ตำแหน่ง):
+  - Line 1214-1224: Student Report sessions - เปลี่ยนจาก wrap A-N เป็น A-M only
+  - Line 1422-1432: Tutor Report summary - เปลี่ยนจาก wrap A-N เป็น A-M only
+  - Line 1693-1703: Tutor Report detail - เปลี่ยนจาก wrap A-N เป็น A-M only
+- Commit: `9e0e9fa Fix wrap text display issue in column N`
+
+---
 
 ### **Version 8.5 / Payment 7.6** (4 ธันวาคม 2568) - 🎨 UX Enhancement & Default Filters
 

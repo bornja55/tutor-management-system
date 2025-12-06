@@ -37,12 +37,13 @@
 
 **การปรับปรุง TutorDB:**
 
-- เพิ่ม Column N: LINE OA User ID ⭐ (สำคัญมาก!)
-- เพิ่ม Column O: Phone Number
-- เพิ่ม Column U: Registration Date (หลัง Payment Rules)
-- เพิ่ม Column V: Verification Status
-- เพิ่ม Column W: Last Updated
-- **ไม่ย้าย Payment Rules** (P-T) - ยังใช้งานอยู่!
+- เพิ่ม Column U: LINE OA User ID ⭐ (สำคัญมาก!)
+- เพิ่ม Column V: Phone Number
+- เพิ่ม Column W: Registration Date
+- เพิ่ม Column X: Verification Status
+- เพิ่ม Column Y: Last Updated
+- **ไม่แก้ไข Columns N-O** (Book Bank) - ใช้งานอยู่!
+- **ไม่แก้ไข Columns P-T** (Payment Rules) - ใช้งานอยู่!
 
 **อัปเดต README.md:**
 
