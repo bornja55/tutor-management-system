@@ -60,7 +60,8 @@
 
 ### **6. ระบบจัดการฐานข้อมูล (Shared Utilities)** ✅ เสร็จสิ้น
 - **TutorDB**: ใช้ชีตแยกต่างหากเป็นฐานข้อมูลกลางสำหรับติวเตอร์ เพื่อให้สามารถอ้างอิง "ชื่อจริง" ของติวเตอร์ได้ แม้ชื่อที่แสดงใน LINE จะเปลี่ยนไป
-- **TutorDB Payment Rules (Columns P-T)**: เก็บเงื่อนไขการจ่ายเงินแยกรายบุคคลในคอลัมน์เดียวกับข้อมูลติวเตอร์ (อัตรา F-I, Payment Triggers P-S, Conditions T)
+- **TutorDB Identity (Columns L-R)** ⚙️: เก็บข้อมูลยืนยันตัวตน (LINE Display Name L, LINE Group ID M, **LINE OA User ID N**, Phone Number O, Registration Date P, Verification Status Q, Last Updated R)
+- **TutorDB Payment Rules (Columns S-W)**: เก็บเงื่อนไขการจ่ายเงินแยกรายบุคคลในคอลัมน์เดียวกับข้อมูลติวเตอร์ (อัตรา F-I, Payment Triggers S-V, Conditions W)
 - **Shared Config & Functions**: รวมการตั้งค่า (เช่น เรทค่าสอน) และฟังก์ชันที่ใช้ร่วมกันไว้ที่ส่วนกลาง ทำให้ง่ายต่อการบำรุงรักษา
 - **Payment Rules Engine**: ระบบคำนวณเงินอัตโนมัติตาม rules ที่กำหนด รองรับ conditions และ triggers ต่างๆ
 
@@ -160,7 +161,27 @@
 
 #### **2.2 ส่งข้อมูลให้ติวเตอร์ยืนยัน (LINE OA)**
 
-ระบบส่งข้อความผ่าน LINE OA ไปยังติวเตอร์แต่ละคน
+**⚠️ การยืนยันตัวตน:**
+
+ติวเตอร์ต้องลงทะเบียนผ่าน LINE OA ก่อนเพื่อผูก LINE OA User ID กับระบบ
+
+**เหตุผล:** LINE User ID จาก Group ≠ LINE User ID จาก OA
+
+- ติวเตอร์ส่งรายงานผ่าน **LINE Group** → Group User ID
+- ระบบส่งยืนยันผ่าน **LINE OA** → OA User ID (ต่างกัน!)
+
+**วิธีลงทะเบียน (Option 2: Registration Key):**
+
+1. Admin สร้าง Registration Key ให้ติวเตอร์ (เช่น `TUTOR-001-ABC123`)
+2. ติวเตอร์ส่งข้อความส่วนตัวมาที่ LINE OA: "ลงทะเบียน [คีย์]"
+3. ระบบบันทึก OA User ID ใน TutorDB (Column N)
+4. ยืนยันตัวตนสำเร็จ ✅
+
+**ดูรายละเอียดเพิ่มเติม:** [IDENTITY_VERIFICATION_DESIGN.md](IDENTITY_VERIFICATION_DESIGN.md)
+
+---
+
+ระบบส่งข้อความผ่าน LINE OA ไปยังติวเตอร์แต่ละคน (ใช้ OA User ID จาก TutorDB)
 
 **ข้อความที่ส่ง:**
 

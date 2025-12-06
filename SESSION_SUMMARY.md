@@ -9,6 +9,49 @@
 
 ## ✅ งานที่ทำเสร็จในครั้งนี้
 
+### 📚 Session 3: GitHub Setup & Identity Verification Design
+
+#### 🔗 GitHub Repository Setup
+
+**สร้างและเชื่อมต่อ Repository:**
+
+- Repository: <https://github.com/bornja55/tutor-management-system>
+- Branch: main
+- Push สำเร็จ: 5 commits
+
+#### 🔐 ออกแบบระบบยืนยันตัวตน (Identity Verification)
+
+**ค้นพบปัญหา:**
+
+- LINE User ID จาก Group ≠ LINE User ID จาก OA
+- ติวเตอร์ส่งรายงานผ่าน LINE Group แต่ระบบต้องส่งยืนยันผ่าน LINE OA
+- ไม่สามารถส่งข้อความถึงติวเตอร์ได้ถ้าใช้ Group User ID
+
+**แนวทางแก้ไข:**
+
+- สร้างเอกสาร IDENTITY_VERIFICATION_DESIGN.md
+- ออกแบบ 3 วิธียืนยันตัวตน:
+  1. **Option 1:** Rich Menu + LIFF (ระยะยาว, ปลอดภัยสูง)
+  2. **Option 2:** Registration Key (MVP, ทำได้เร็ว) ⭐ แนะนำเริ่มต้น
+  3. **Option 3:** Phone Verification (ระยะกลาง)
+
+**การปรับปรุง TutorDB:**
+
+- เพิ่ม Column N: LINE OA User ID ⭐ (สำคัญมาก!)
+- เพิ่ม Column O: Phone Number
+- เพิ่ม Column P: Registration Date
+- เพิ่ม Column Q: Verification Status
+- เพิ่ม Column R: Last Updated
+- ย้าย Payment Rules จาก P-T → S-W
+
+**อัปเดต README.md:**
+
+- เพิ่มคำอธิบายการยืนยันตัวตนใน Phase 2.2
+- อัปเดต TutorDB structure (Columns L-R สำหรับ Identity)
+- เพิ่มลิงก์ไปยัง IDENTITY_VERIFICATION_DESIGN.md
+
+---
+
 ### 📚 Session 2: Documentation & Validation System Design
 
 #### 🔍 วิเคราะห์ระบบยืนยันที่หายไป
