@@ -417,8 +417,8 @@ function saveTutorDisplayToLineIdMapping(dashboard, tutorLineIdMap) {
 
   const jsonString = JSON.stringify(mapping);
 
-  // เก็บใน cell N9 (แถว tutor checkbox) และตั้งค่าสีฟอนต์เป็นสีขาว
-  dashboard.getRange('N9')
+  // เก็บใน cell O9 (แถว tutor checkbox) และตั้งค่าสีฟอนต์เป็นสีขาว
+  dashboard.getRange('O9')
     .setValue(jsonString)
     .setFontColor('#ffffff');
 }
@@ -427,7 +427,7 @@ function saveTutorDisplayToLineIdMapping(dashboard, tutorLineIdMap) {
 // 📖 LOAD TUTOR DISPLAY-TO-LINEID MAPPING
 // ============================================================
 function loadTutorDisplayToLineIdMapping(dashboard) {
-  const jsonString = dashboard.getRange('N9').getValue();
+  const jsonString = dashboard.getRange('O9').getValue();
   if (!jsonString) return {};
 
   try {

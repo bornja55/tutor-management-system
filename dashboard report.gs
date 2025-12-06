@@ -313,7 +313,7 @@ function updateReportCheckboxes() {
   dashboard.getRange('B5').insertCheckboxes().setHorizontalAlignment('center').setBackground(REPORT_CONFIG.COLORS.student).setVerticalAlignment('middle').setWrap(true);
   dashboard.getRange('C5').setValue('ทั้งหมด').setFontSize(9).setFontColor('#ea4335').setFontWeight('bold').setBackground(REPORT_CONFIG.COLORS.student).setVerticalAlignment('middle').setWrap(true);
   dashboard.getRange('D5').setValue('(' + students.length + ' คน)').setFontSize(8).setFontColor('#666666').setFontStyle('italic').setBackground(REPORT_CONFIG.COLORS.student).setVerticalAlignment('middle').setWrap(true);
-  dashboard.getRange('E5:N5').setValue('').setBackground(REPORT_CONFIG.COLORS.student).setVerticalAlignment('middle').setWrap(true);  // เคลียร์ E5:N5 (updated from E9:N9)
+  dashboard.getRange('E5:N5').setValue('').setBackground(REPORT_CONFIG.COLORS.student).setVerticalAlignment('middle').setWrap(true);  // เคลียร์ E5:O5 (updated from E9:N9)
 
   // Border for student section (14 columns, updated from row 9)
   const studentEndRow = 6 + studentRowsUsed - 1;
@@ -505,14 +505,14 @@ function saveTutorDisplayToLineIdMappingReport(dashboard, tutorLineIdMap) {
   tutorLineIdMap.forEach((info, lineId) => {
     mapping[info.displayName] = lineId;
   });
-  // เก็บใน cell N5 (แถว student checkbox) และตั้งค่าสีฟอนต์เป็นสีขาว
-  dashboard.getRange('N5')
+  // เก็บใน cell O5 (แถว student checkbox) และตั้งค่าสีฟอนต์เป็นสีขาว
+  dashboard.getRange('O5')
     .setValue(JSON.stringify(mapping))
     .setFontColor('#ffffff');
 }
 
 function loadTutorDisplayToLineIdMappingReport(dashboard) {
-  const jsonString = dashboard.getRange('N5').getValue();
+  const jsonString = dashboard.getRange('O5').getValue();
   if (!jsonString) return {};
   try {
     return JSON.parse(jsonString);
